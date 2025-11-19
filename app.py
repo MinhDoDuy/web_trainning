@@ -2,10 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 import psycopg2
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # bắt buộc để flash hoạt động
+app.secret_key = "supersecretkey"  # Bắt buộc để flash hoạt động
+
 
 # -----------------------------
-# Hàm kết nối database
+# Hàm kết nối database PostgreSQL
 # -----------------------------
 def get_db_connection():
     conn = psycopg2.connect(
@@ -15,6 +16,7 @@ def get_db_connection():
         password="aloalo123"  # đổi mật khẩu DB của bạn
     )
     return conn
+
 
 # -----------------------------
 # Route: danh sách tasks
@@ -39,6 +41,7 @@ def index():
 
     return render_template("tasks.html", tasks=tasks)
 
+
 # -----------------------------
 # Route: thêm task mới
 # -----------------------------
@@ -58,8 +61,9 @@ def add_task():
     cur.close()
     conn.close()
 
-    flash("Task thêm thành công!")
+    flash("Task thêm thành công!", "success")
     return redirect(url_for('index'))
+
 
 # -----------------------------
 # Route: sửa task
@@ -80,7 +84,7 @@ def edit_task(task_id):
         conn.commit()
         cur.close()
         conn.close()
-        flash("Task cập nhật thành công!")
+        flash("Task cập nhật thành công!", "info")
         return redirect(url_for('index'))
 
     # GET: lấy dữ liệu task
@@ -90,7 +94,7 @@ def edit_task(task_id):
     conn.close()
 
     if row is None:
-        flash("Task không tồn tại!")
+        flash("Task không tồn tại!", "danger")
         return redirect(url_for('index'))
 
     task = {
@@ -101,6 +105,7 @@ def edit_task(task_id):
     }
 
     return render_template("edit_task.html", task=task)
+
 
 # -----------------------------
 # Route: xóa task
@@ -114,11 +119,11 @@ def delete(task_id):
     cur.close()
     conn.close()
 
-    flash("Task xóa thành công!")
+    flash("Task xóa thành công!", "danger")
     return redirect(url_for('index'))
 
 # -----------------------------
 # Run app
 # -----------------------------
 if __name__ == '__main__':
-    app.run(debug=True, port = 5001)
+    app.run(debug=True, port=5001)
