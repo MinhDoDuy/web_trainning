@@ -97,10 +97,31 @@ def register():
 # -----------------------------
 # Route: danh sách tasks
 # -----------------------------
+# @app.route('/menu')
+# @login_required
+# def index():
+#
+#     conn = get_db_connection()
+#     cur = conn.cursor()
+#     cur.execute("SELECT id, title, description, status FROM tasks ORDER BY id ASC")
+#     rows = cur.fetchall()
+#     cur.close()
+#     conn.close()
+#
+#     tasks = []
+#     for r in rows:
+#         tasks.append({
+#             'id': r[0],
+#             'title': r[1],
+#             'description': r[2],
+#             'status': r[3]
+#         })
+#
+#     return render_template("tasks.html", tasks=tasks)
+
 @app.route('/')
 @login_required
 def index():
-
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute("SELECT id, title, description, status FROM tasks ORDER BY id ASC")
@@ -117,7 +138,11 @@ def index():
             'status': r[3]
         })
 
-    return render_template("tasks.html", tasks=tasks)
+    # Lấy username từ session
+    username = session.get('username')
+
+    return render_template("tasks.html", tasks=tasks, username=username)
+
 
 
 # -----------------------------
