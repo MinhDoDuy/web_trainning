@@ -1,5 +1,6 @@
 import psycopg2
 
+
 def get_connection():
     return psycopg2.connect(
         dbname="week4db",
@@ -9,6 +10,7 @@ def get_connection():
         port="5432"
     )
 
+
 def get_all_tasks():
     conn = get_connection()
     cursor = conn.cursor()
@@ -16,6 +18,7 @@ def get_all_tasks():
     tasks = cursor.fetchall()
     conn.close()
     return [{"id": t[0], "title": t[1], "description": t[2], "status": t[3]} for t in tasks]
+
 
 def get_task(task_id):
     conn = get_connection()
@@ -27,6 +30,7 @@ def get_task(task_id):
         return {"id": t[0], "title": t[1], "description": t[2], "status": t[3]}
     return None
 
+
 def create_task(title, description, status="pending"):
     conn = get_connection()
     cursor = conn.cursor()
@@ -36,6 +40,7 @@ def create_task(title, description, status="pending"):
     conn.commit()
     conn.close()
     return task_id
+
 
 def update_task(task_id, title=None, description=None, status=None):
     conn = get_connection()
@@ -48,6 +53,7 @@ def update_task(task_id, title=None, description=None, status=None):
         cursor.execute("UPDATE tasks SET status=%s WHERE id=%s", (status, task_id))
     conn.commit()
     conn.close()
+
 
 def delete_task(task_id):
     conn = get_connection()
