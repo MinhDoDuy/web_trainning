@@ -9,6 +9,13 @@ from database import (
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
+@app.route("/")
+def home():
+    if "user_id" in session:
+        return redirect(url_for("index_route"))  # nếu đã login thì vào task
+    return redirect(url_for("login_route"))      # nếu chưa login thì vào login
+
+
 # -----------------------------
 # Decorators
 # -----------------------------
