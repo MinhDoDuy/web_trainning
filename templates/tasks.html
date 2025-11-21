@@ -9,136 +9,84 @@
 
 <div class="container py-5">
 
-    <!-- Header: Tên app + username + logout -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="m-0">Danh sách Tasks</h1>
+        <h1>Danh sách Tasks</h1>
         <div>
-            <span class="me-3">Chào mừng bạn: {{ username }}</span>
-            <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
-                Đăng xuất
-            </a>
+            <span class="me-3">Chào {{ username }}</span>
+            <a href="{{ url_for('logout_route') }}" class="btn btn-outline-danger">Đăng xuất</a>
         </div>
     </div>
 
-    <!-- ================== TOAST FLASH MESSAGES ================== -->
+    <!-- Flash messages -->
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-        {% for category, message in messages %}
-        <div class="toast align-items-center text-bg-{{ category }} border-0 mb-2" role="alert" aria-live="assertive"
-             aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">{{ message }}</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                        aria-label="Close"></button>
+            {% for category, message in messages %}
+            <div class="toast text-bg-{{ category }} border-0 mb-2">
+                <div class="d-flex">
+                    <div class="toast-body">{{ message }}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
             </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
         {% endif %}
         {% endwith %}
     </div>
 
-    <!-- ================== FORM THÊM TASK MỚI ================== -->
+    <!-- Thêm Task -->
     <div class="card mb-5">
         <div class="card-header">Thêm Task mới</div>
         <div class="card-body">
-            <form action="{{ url_for('add_task') }}" method="post" class="row g-3">
-                <div class="col-md-4">
-                    <input type="text" name="title" class="form-control" placeholder="Title" required>
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="description" class="form-control" placeholder="Description">
-                </div>
+            <form action="{{ url_for('add_task_route') }}" method="post" class="row g-3">
+                <div class="col-md-4"><input type="text" name="title" class="form-control" placeholder="Title" required></div>
+                <div class="col-md-4"><input type="text" name="description" class="form-control" placeholder="Description"></div>
                 <div class="col-md-2">
                     <select name="status" class="form-select">
                         <option value="completed">Completed</option>
-                        <option value="pending">Pending</option>
+                        <option value="pending" selected>Pending</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-success w-100">Thêm Task</button>
-                </div>
+                <div class="col-md-2"><button type="submit" class="btn btn-success w-100">Thêm Task</button></div>
             </form>
         </div>
     </div>
 
-    <!-- ================== BẢNG TASK ================== -->
-    <table class="table table-striped table-hover table-bordered align-middle">
+    <!-- Bảng Task -->
+    <table class="table table-striped table-bordered">
         <thead class="table-dark">
-        <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
+            <tr><th>#</th><th>Title</th><th>Description</th><th>Status</th><th>Actions</th></tr>
         </thead>
         <tbody>
         {% for task in tasks %}
-        <tr>
-            <td>{{ task.id }}</td>
-            <td>{{ task.title }}</td>
-            <td>{{ task.description }}</td>
-            <td>
-                {% if task.status == 'completed' %}
-                <span class="badge bg-success">Completed</span>
-                {% else %}
-                <span class="badge bg-warning text-dark">Pending</span>
-                {% endif %}
-            </td>
-            <td>
-                <a class="btn btn-sm btn-primary" href="{{ url_for('edit_task', task_id=task.id) }}">Sửa</a>
-                <a class="btn btn-sm btn-danger" href="#"
-                   data-bs-toggle="modal" data-bs-target="#deleteModal"
-                   data-task-url="{{ url_for('delete', task_id=task.id) }}">
-                    Xóa
-                </a>
-            </td>
-        </tr>
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                <td>
+                    {% if task.status == 'completed' %}
+                        <span class="badge bg-success">Completed</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" href="{{ url_for('edit_task_route', task_id=task.id) }}">Sửa</a>
+                    {% if session.role == 'admin' %}
+                    <a class="btn btn-sm btn-danger" href="{{ url_for('delete_task_route', task_id=task.id) }}">Xóa</a>
+                    {% endif %}
+                </td>
+            </tr>
         {% endfor %}
         </tbody>
     </table>
 
 </div>
 
-<!-- ================== MODAL XÓA TASK ================== -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Xác nhận xóa</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                Bạn có chắc muốn xóa task này?
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <a href="#" class="btn btn-danger" id="confirmDeleteBtn">Xóa</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ================== JS ================== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-    // Modal Xóa: đặt href cho nút Xóa
-    var deleteModal = document.getElementById('deleteModal');
-    deleteModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var url = button.getAttribute('data-task-url');
-        var confirmBtn = document.getElementById('confirmDeleteBtn');
-        confirmBtn.setAttribute('href', url);
-    });
-
-    // Toast flash: tự động show và ẩn
-    var toastElList = [].slice.call(document.querySelectorAll('.toast'));
-    toastElList.map(function(toastEl) {
-        new bootstrap.Toast(toastEl, { delay: 3000 }).show();
+    document.querySelectorAll('.toast').forEach(toastEl => {
+        new bootstrap.Toast(toastEl, {delay: 3000}).show();
     });
 </script>
-
 </body>
 </html>
