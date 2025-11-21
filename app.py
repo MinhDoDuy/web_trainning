@@ -103,7 +103,7 @@ def index_route():
         tasks = get_tasks_by_user(session["user_id"])  # user xem của mình
     return render_template("tasks.html", tasks=tasks, username=session["username"], role=session["role"])
 
-# -----------------------------
+# ------------------------------------
 # Route: Add Task
 # -----------------------------
 @app.route("/add_task", methods=["POST"])
