@@ -44,6 +44,9 @@
 
     <!-- Form Thêm/Sửa User -->
     <div class="card p-3 mb-4">
+        {% if edit_user and edit_user.role == 'admin' %}
+            <div class="alert alert-warning">Bạn không thể sửa user admin!</div>
+        {% else %}
         <form action="{{ url_for('admin_users_route') }}" method="post" class="row g-3">
             {% if edit_user %}
                 <input type="hidden" name="user_id" value="{{ edit_user.id }}">
@@ -69,6 +72,7 @@
                 {% endif %}
             </div>
         </form>
+        {% endif %}
     </div>
 
     <!-- Table User -->
@@ -95,14 +99,17 @@
                     {% endif %}
                 </td>
                 <td>
+                    {% if user.role != 'admin' %}
                     <a href="{{ url_for('admin_users_route') }}?edit={{ user.id }}" class="action-btn edit me-2">
                         <i class="bi bi-pencil-square"></i>
                     </a>
-                    {% if user.role != 'admin' %}
                     <a href="#" class="action-btn delete" data-bs-toggle="modal" data-bs-target="#deleteModal"
                        data-user-url="{{ url_for('admin_delete_user_route', user_id=user.id) }}">
                         <i class="bi bi-trash-fill"></i>
                     </a>
+                    {% else %}
+<!--                    &lt;!&ndash; Không hiện nút edit/delete cho admin &ndash;&gt;-->
+<!--                    <span class="text-muted">Không thể sửa/xóa</span>-->
                     {% endif %}
                 </td>
             </tr>
@@ -151,4 +158,3 @@
 
 </body>
 </html>
-
