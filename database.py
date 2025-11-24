@@ -1,3 +1,5 @@
+import sqlite3
+
 import psycopg2
 
 # -----------------------------
@@ -105,3 +107,11 @@ def delete_task(task_id):
     conn.commit()
     cur.close()
     conn.close()
+
+def get_all_users():
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, email, role FROM users")
+    users = cursor.fetchall()
+    conn.close()
+    return users

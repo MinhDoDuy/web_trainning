@@ -12,6 +12,13 @@ app.secret_key = "supersecretkey"
 # -----------------------------
 # Decorators
 # -----------------------------
+
+@app.route('/admin/users')
+def admin_users_route():
+    # code hiển thị danh sách users
+    return render_template('admin_users.html')
+
+
 def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
