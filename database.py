@@ -144,20 +144,20 @@ def delete_task(task_id):
     cur.close()
     conn.close()
 
-    @app.route("/admin/users/delete/<int:user_id>")
-    @login_required
-    @role_required
-    def admin_delete_user_route(user_id):
-        user = get_user_by_id(user_id)
-        if not user:
-            flash("User không tồn tại", "danger")
-            return redirect(url_for("admin_users_route"))
-
-        if user["role"] == "admin":
-            flash("Không thể xóa user là admin", "danger")
-            return redirect(url_for("admin_users_route"))
-
-        delete_user(user_id)
-        flash(f"Đã xóa user {user['username']}", "danger")  # toast màu đỏ
-        return redirect(url_for("admin_users_route"))
+# @app.route("/admin/users/delete/<int:user_id>")
+# @login_required
+# @role_required
+# def admin_delete_user_route(user_id):
+#     user = get_user_by_id(user_id)
+#     if not user:
+#         flash("User không tồn tại", "danger")
+#         return redirect(url_for("admin_users_route"))
+#
+#     if user["role"] == "admin":
+#         flash("Không thể xóa user là admin", "danger")
+#         return redirect(url_for("admin_users_route"))
+#
+#     delete_user(user_id)
+#     flash(f"Đã xóa user {user['username']}", "danger")  # toast màu đỏ
+#     return redirect(url_for("admin_users_route"))
 

@@ -20,8 +20,8 @@
 
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="page-title"><i class="bi bi-people-fill"></i> Quản lý User
-            {% if edit_user %}- Sửa User{% endif %}
+        <h2 class="page-title"><i class="bi bi-people-fill"></i> Manage User
+            {% if edit_user %}- Edit User{% endif %}
         </h2>
         <a href="{{ url_for('index_route') }}" class="btn btn-secondary">Dashboard</a>
     </div>
@@ -45,7 +45,7 @@
     <!-- Form Thêm/Sửa User -->
     <div class="card p-3 mb-4">
         {% if edit_user and edit_user.role == 'admin' %}
-            <div class="alert alert-warning">Bạn không thể sửa user admin!</div>
+            <div class="alert alert-warning">You cannot edit the Admin user!</div>
         {% else %}
         <form action="{{ url_for('admin_users_route') }}" method="post" class="row g-3">
             {% if edit_user %}
@@ -66,7 +66,7 @@
                 </select>
             </div>
             <div class="col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-success flex-fill">{{ 'Cập nhật' if edit_user else 'Thêm User' }}</button>
+                <button type="submit" class="btn btn-success flex-fill">{{ 'Update' if edit_user else 'Add User' }}</button>
                 {% if edit_user %}
                 <a href="{{ url_for('admin_users_route') }}" class="btn btn-secondary flex-fill">Hủy</a>
                 {% endif %}
@@ -125,15 +125,15 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Xác nhận xóa</h5>
+                <h5 class="modal-title">Submit Delete</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                Bạn có chắc muốn xóa user này?
+                Are you sure you want to Delete this user?
             </div>
             <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <a href="#" class="btn btn-danger" id="confirmDeleteBtn">Xóa</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" class="btn btn-danger" id="confirmDeleteBtn">Delete</a>
             </div>
         </div>
     </div>

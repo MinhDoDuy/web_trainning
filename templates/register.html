@@ -12,7 +12,7 @@
         <div class="col-md-5">
             <div class="card shadow">
                 <div class="card-body p-4">
-                    <h3 class="text-center mb-4">Đăng ký</h3>
+                    <h3 class="text-center mb-4">Register</h3>
                     <form method="POST" action="{{ url_for('register_route') }}">
                         <div class="mb-3">
                             <input type="text" name="username" class="form-control" placeholder="Username"
@@ -30,7 +30,7 @@
                         <button type="submit" class="btn btn-secondary w-100">Register</button>
                     </form>
                     <div class="text-center mt-3">
-                        Đã có tài khoản?
+                        Already have an Account?
                         <a href="{{ url_for('login_route') }}" class="btn btn-dark btn-sm ms-2">Login</a>
                     </div>
                 </div>

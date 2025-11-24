@@ -17,7 +17,7 @@ def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         if "user_id" not in session:
-            flash("Bạn cần đăng nhập!", "warning")
+            flash("You Need To Log In!", "warning")
             return redirect(url_for("login_route"))
         return f(*args, **kwargs)
     return wrapper
@@ -27,7 +27,7 @@ def role_required(role):
         @wraps(f)
         def wrapper(*args, **kwargs):
             if session.get("role") != role:
-                flash("Bạn không có quyền truy cập!", "danger")
+                flash("You Do Not Have Access!", "danger")
                 return redirect(url_for("index_route"))
             return f(*args, **kwargs)
         return wrapper
@@ -48,14 +48,14 @@ def register_route():
         role_value = role
 
         if not username:
-            flash("Bạn chưa nhập username!", "danger")
+            flash("You Have Not Entered A Username!", "danger")
         elif not password:
-            flash("Bạn chưa nhập password!", "danger")
+            flash("You Have Not Entered A Password!", "danger")
         elif get_user_by_username(username):
-            flash("Tài khoản đã tồn tại!", "danger")
+            flash("Account Already Exists!", "danger")
         else:
             create_user(username, password, role)
-            flash("Đăng ký thành công!", "success")
+            flash("Registration Successful!", "success")
             return redirect(url_for("login_route"))
 
     return render_template("register.html", username_value=username_value, role_value=role_value)
@@ -69,18 +69,18 @@ def login_route():
         username_value = username
 
         if not username:
-            flash("Bạn chưa nhập username!", "danger")
+            flash("You Have Not Entered A Username!", "danger")
         elif not password:
-            flash("Bạn chưa nhập password!", "danger")
+            flash("You Have Not Entered A Password!", "danger")
         else:
             user = get_user_by_username(username)
             if not user or user["password"] != password:
-                flash("Sai username hoặc password!", "danger")
+                flash("Wrong Username or Password!", "danger")
             else:
                 session["user_id"] = user["id"]
                 session["username"] = user["username"]
                 session["role"] = user["role"]
-                flash("Đăng nhập thành công!", "success")
+                flash("Login Successful!", "success")
                 return redirect(url_for("index_route"))
 
     return render_template("login.html", username_value=username_value)
@@ -88,7 +88,7 @@ def login_route():
 @app.route("/logout")
 def logout_route():
     session.clear()
-    flash("Bạn đã đăng xuất!", "success")
+    flash("You Have Logged Out!", "success")
     return redirect(url_for("login_route"))
 
 # -----------------------------
@@ -113,7 +113,7 @@ def add_task_route():
     description = request.form.get("description")
     status = request.form.get("status")
     create_task(title, description, status, session["user_id"])
-    flash("Task thêm thành công!", "success")
+    flash("Task Added Successfully!", "success")
     return redirect(url_for("index_route"))
 
 @app.route("/edit_task/<int:task_id>", methods=["GET", "POST"])
@@ -121,11 +121,11 @@ def add_task_route():
 def edit_task_route(task_id):
     task = get_task(task_id)
     if not task:
-        flash("Task không tồn tại!", "danger")
+        flash("Task Does Not Exist!", "danger")
         return redirect(url_for("index_route"))
 
     if session["role"] != "admin" and task["user_id"] != session["user_id"]:
-        flash("Bạn không có quyền sửa task này!", "danger")
+        flash("You Do Not Have Permission To Edit This Task!", "danger")
         return redirect(url_for("index_route"))
 
     if request.method == "POST":
@@ -133,7 +133,7 @@ def edit_task_route(task_id):
         description = request.form.get("description")
         status = request.form.get("status")
         update_task(task_id, title, description, status)
-        flash("Task đã cập nhật!", "success")
+        flash("Task Updated!", "success")
         return redirect(url_for("index_route"))
 
     return render_template("edit_task.html", task=task)
@@ -144,10 +144,10 @@ def edit_task_route(task_id):
 def delete_task_route(task_id):
     task = get_task(task_id)
     if not task:
-        flash("Task không tồn tại!", "danger")
+        flash("Task Does Not Exist!", "danger")
     else:
         delete_task(task_id)
-        flash("Task đã xóa!", "success")
+        flash("Task Deleted!", "success")
     return redirect(url_for("index_route"))
 
 # -----------------------------
@@ -174,10 +174,10 @@ def admin_users_route():
 
         if user_id:  # update
             update_user(user_id, username, password if password else None, role)
-            flash("User đã cập nhật!", "success")
+            flash("User Updated!", "success")
         else:  # tạo mới
             create_user(username, password, role)
-            flash("User đã thêm!", "success")
+            flash("User Added!", "success")
         return redirect(url_for("admin_users_route"))
 
     return render_template("admin_users.html", users=users, edit_user=edit_user)
@@ -189,7 +189,7 @@ def admin_users_route():
 def admin_edit_user_route(user_id):
     user = get_user_by_id(user_id)
     if not user:
-        flash("User không tồn tại!", "danger")
+        flash("User Does Not Exist!", "danger")
         return redirect(url_for("admin_users_route"))
 
     if request.method == "POST":
@@ -198,10 +198,10 @@ def admin_edit_user_route(user_id):
         password = request.form.get("password", "").strip()  # optional
 
         if not username:
-            flash("Username không được để trống!", "danger")
+            flash("Username Cannot Be Blank!", "danger")
         else:
             update_user(user_id, username, role, password if password else None)
-            flash("User đã cập nhật!", "success")
+            flash("User Updated!", "success")
             return redirect(url_for("admin_users_route"))
 
     return render_template("edit_user.html", user=user)
@@ -212,10 +212,10 @@ def admin_edit_user_route(user_id):
 def admin_delete_user_route(user_id):
     user = get_user_by_id(user_id)
     if not user:
-        flash("User không tồn tại!", "danger")
+        flash("User Does Not Exist!", "danger")
     else:
         delete_user(user_id)
-        flash("User đã bị xóa!", "success")
+        flash("User Deleted!", "success")
     return redirect(url_for("admin_users_route"))
 
 # -----------------------------
