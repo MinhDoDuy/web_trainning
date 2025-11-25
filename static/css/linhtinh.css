@@ -152,31 +152,19 @@ body { background-color: #f8f9fa; }
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* Status dropdown kiểu admin_users */
+
+* Status dropdown style */
 .status-dropdown .dropdown-item {
-    font-weight: 600;
     transition: all 0.2s;
+    font-weight: 500;
 }
-
 .status-dropdown .dropdown-item.completed {
-    color: #198754; /* xanh lá nổi bật */
+    color: #0f5132; /* xanh đậm */
 }
-
 .status-dropdown .dropdown-item.pending {
-    color: #ffc107; /* vàng nổi bật */
+    color: #664d03; /* cam đậm */
 }
-
 .status-dropdown .dropdown-item:hover {
     background-color: #6c757d33;
     color: #fff !important;
-    border-radius: 8px;
-}
-
-/* Modal Edit/Cancel button trong task */
-.btn-modal-save {
-    @extend .btn-gradient; /* giữ nguyên gradient Save */
-}
-
-.btn-modal-cancel {
-    @extend .btn-cancel; /* giữ nguyên gradient Cancel */
 }
