@@ -1,0 +1,109 @@
+body {
+    background-color: #f4f6f9;
+}
+
+.card { border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.07); }
+        .page-title { font-size: 28px; font-weight: 700; }
+        .action-btn i { font-size: 20px; }
+        .action-btn.edit i { color: #0d6efd; }
+        .action-btn.delete i { color: #dc3545; }
+
+
+        .dropdown-menu .dropdown-item {
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #D3D3D3; /* nền đậm khi hover */
+            color: #fff;               /* chữ trắng nổi bật */
+            font-weight: 600;          /* chữ đậm hơn */
+        }
+        .text-danger:hover { color: #a71d2a !important; }   /* hover đỏ đậm */
+        .text-secondary:hover { color: #555 !important; }  /* hover xám đậm */
+
+        .clear-input {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            color: #bbb;
+            font-weight: bold;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            text-align: center;
+            line-height: 22px;
+            display: none;
+            transition: all 0.2s;
+        }
+
+        .position-relative input:focus + .clear-input,
+        .position-relative input:not(:placeholder-shown) + .clear-input {
+            display: block;
+        }
+
+        .clear-input:hover {
+            color: #fff;
+            background-color: #dc3545; /* đỏ nổi bật khi hover */
+            transform: translateY(-50%) scale(1.1);
+        }
+
+/* Nút Cancel trong modal */
+.modal-footer .btn-cancel-modal {
+    background: linear-gradient(135deg, #6c757d, #495057); /* xám gradient */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.modal-footer .btn-cancel-modal:hover {
+    background: linear-gradient(135deg, #495057, #6c757d);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.modal-footer .btn-cancel-modal:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Nút Delete trong modal */
+.modal-footer .btn-delete-modal {
+    background: linear-gradient(135deg, #FF416C, #FF4B2B);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    text-decoration: none; /* bỏ gạch chân */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.modal-footer .btn-delete-modal:hover {
+    background: linear-gradient(135deg, #FF4B2B, #FF416C);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.modal-footer .btn-delete-modal:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+

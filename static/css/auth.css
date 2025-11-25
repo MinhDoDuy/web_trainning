@@ -1,0 +1,122 @@
+
+        /* Background đẹp như yêu cầu */
+        body {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 10px 12px 30px rgba(0,0,0,0.25);
+        }
+
+        /* Nút gradient xịn */
+        .btn-gradient {
+            background: linear-gradient(135deg, #4b6cb7, #182848); /* gradient sắc nét hơn */
+            color: white;
+            border: none;
+            border-radius: 12px; /* bo tròn mềm mại */
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.4s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #182848, #4b6cb7); /* đảo gradient khi hover */
+            transform: translateY(-3px) scale(1.0); /* nhấc + phồng nhẹ */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-gradient:active {
+            transform: translateY(0) scale(0.98); /* cảm giác nhấn */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+
+        .form-control {
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #4b6cb7;
+            box-shadow: 0 0 12px rgba(75,108,183,0.35);
+        }
+
+        .input-group { position: relative; }
+
+        .eye-toggle, .clear-input {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Icon show/hide password */
+        .eye-toggle, .clear-input {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .eye-toggle { right: 15px; }
+        .eye-toggle:hover {
+            transform: translateY(-50%) scale(1.2);
+            color: #4b6cb7;
+        }
+
+        /* X clear input */
+        .clear-input {
+            right: 10px;
+            color: #ccc;
+            display: none;
+        }
+        .clear-input:hover {
+            transform: translateY(-50%) scale(1.2);
+            color: #4b6cb7;
+        }
+
+        .position-relative input:focus + .clear-input,
+        .position-relative input:not(:placeholder-shown) + .clear-input {
+            display: block;
+        }
+
+        .link-hover {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.3s ease;
+        }
+        .link-hover:hover {
+            transform: translateY(-2px);
+            color: #182848;
+            text-decoration: none;
+        }
+        .link-hover i {
+            transition: all 0.3s ease;
+        }
+        .link-hover:hover i {
+            transform: rotate(20deg) scale(1.2);
+            color: #4b6cb7;
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 11;
+        }
