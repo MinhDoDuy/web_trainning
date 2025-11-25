@@ -1,70 +1,88 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sửa Task</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background: #f3f4f6; }
-        .edit-card { max-width: 600px; margin: auto; margin-top: 80px; }
-    </style>
-</head>
-<body>
+<!--<!doctype html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Sửa Task</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <style>-->
+<!--        body { background: #f3f4f6; }-->
+<!--        .edit-card { max-width: 600px; margin: auto; margin-top: 80px; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
 
-<div class="edit-card card shadow">
-    <div class="card-body p-4">
-        <h3 class="text-center mb-4">Edit Task</h3>
+<!--<div class="edit-card card shadow">-->
+<!--    <div class="card-body p-4">-->
+<!--        <h3 class="text-center mb-4">Edit Task</h3>-->
 
-        <!-- Flash messages -->
-        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                <div class="toast text-bg-{{ category }} border-0 mb-2">
-                    <div class="d-flex">
-                        <div class="toast-body">{{ message }}</div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                                data-bs-dismiss="toast"></button>
-                    </div>
-                </div>
-                {% endfor %}
-            {% endif %}
-            {% endwith %}
-        </div>
+<!--        &lt;!&ndash; Flash messages &ndash;&gt;-->
+<!--        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">-->
+<!--            {% with messages = get_flashed_messages(with_categories=true) %}-->
+<!--            {% if messages %}-->
+<!--            {% for category, message in messages %}-->
+<!--            <div class="toast text-bg-{{ category }} border-0 mb-2">-->
+<!--                <div class="d-flex">-->
+<!--                    <div class="toast-body">{{ message }}</div>-->
+<!--                    <button type="button" class="btn-close btn-close-white me-2 m-auto"-->
+<!--                            data-bs-dismiss="toast"></button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            {% endfor %}-->
+<!--            {% endif %}-->
+<!--            {% endwith %}-->
+<!--        </div>-->
 
-        <form method="POST" action="{{ url_for('edit_task_route', task_id=task.id) }}">
-            <div class="mb-3">
-                <label class="form-label">Title</label>
-                <input type="text" name="title" class="form-control" value="{{ task.title }}" required>
-            </div>
+<!--        <form method="POST" action="{{ url_for('edit_task_route', task_id=task.id) }}">-->
+<!--            &lt;!&ndash;            <div class="mb-3">&ndash;&gt;-->
+<!--            &lt;!&ndash;                <label class="form-label">Title</label>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <input type="text" name="title" class="form-control" value="{{ task.title }}" required>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
 
-            <div class="mb-3">
-                <label class="form-label">Description</label>
-                <textarea name="description" class="form-control" rows="3">{{ task.description }}</textarea>
-            </div>
+<!--            &lt;!&ndash;            <div class="mb-3">&ndash;&gt;-->
+<!--            &lt;!&ndash;                <label class="form-label">Description</label>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <textarea name="description" class="form-control" rows="3">{{ task.description }}</textarea>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
 
-            <div class="mb-3">
-                <label class="form-label">Status</label>
-                <select name="status" class="form-select">
-                    <option value="completed" {% if task.status =='completed' %}selected{% endif %}>Completed</option>
-                    <option value="pending" {% if task.status =='pending' %}selected{% endif %}>Pending</option>
-                </select>
-            </div>
+<!--            &lt;!&ndash;            <div class="mb-3">&ndash;&gt;-->
+<!--            &lt;!&ndash;                <label class="form-label">Status</label>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <select name="status" class="form-select">&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <option value="completed" {% if task.status =='completed' %}selected{% endif %}>Completed</option>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <option value="pending" {% if task.status =='pending' %}selected{% endif %}>Pending</option>&ndash;&gt;-->
+<!--            &lt;!&ndash;                </select>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
 
-            <div class="d-flex justify-content-between">
-                <a href="{{ url_for('index_route') }}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Update Task</button>
-            </div>
-        </form>
-    </div>
-</div>
+<!--            <div class="mb-3">-->
+<!--                <label class="form-label">Title</label>-->
+<!--                <input type="text" name="title" class="form-control" value="{{ task.title }}">-->
+<!--            </div>-->
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.querySelectorAll('.toast').forEach(toastEl => {
-        new bootstrap.Toast(toastEl, {delay: 3000}).show();
-    });
-</script>
+<!--            <div class="mb-3">-->
+<!--                <label class="form-label">Description</label>-->
+<!--                <textarea name="description" class="form-control" rows="3">{{ task.description }}</textarea>-->
+<!--            </div>-->
 
-</body>
-</html>
+<!--            <div class="mb-3">-->
+<!--                <label class="form-label">Status</label>-->
+<!--                <select name="status" class="form-select">-->
+<!--                    <option value="completed" {% if task.status=='completed' %}selected{% endif %}>Completed</option>-->
+<!--                    <option value="pending" {% if task.status=='pending' %}selected{% endif %}>Pending</option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            <div class="d-flex justify-content-between">-->
+<!--                <a href="{{ url_for('index_route') }}" class="btn btn-secondary">Cancel</a>-->
+<!--                <button type="submit" class="btn btn-primary">Update Task</button>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--<script>-->
+<!--    document.querySelectorAll('.toast').forEach(toastEl => {-->
+<!--        new bootstrap.Toast(toastEl, {delay: 3000}).show();-->
+<!--    });-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
