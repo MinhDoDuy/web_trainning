@@ -120,3 +120,39 @@
             right: 1rem;
             z-index: 11;
         }
+
+/* =======================
+   FORGOT PASSWORD FORM
+======================= */
+.forgot-password-form .forgot-clear-input {
+    right: 10px;
+    color: #ccc;
+    display: none;
+}
+.forgot-password-form .position-relative input:focus + .forgot-clear-input,
+.forgot-password-form .position-relative input:not(:placeholder-shown) + .forgot-clear-input {
+    display: block;
+}
+
+/* =======================
+   RESET PASSWORD FORM
+======================= */
+.reset-password-form .reset-clear-input {
+    right: 10px;
+    color: #ccc;
+    display: none;
+}
+.reset-password-form .reset-eye-toggle {
+    right: 15px;
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+.reset-password-form .reset-clear-input:hover,
+.reset-password-form .reset-eye-toggle:hover {
+    color: #4b6cb7;
+    transform: translateY(-50%) scale(1.2);
+}
+.reset-password-form .position-relative input:focus + .reset-clear-input,
+.reset-password-form .position-relative input:not(:placeholder-shown) + .reset-clear-input {
+    display: block;
+}

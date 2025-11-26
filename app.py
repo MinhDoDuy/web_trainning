@@ -12,6 +12,7 @@ from database import (
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
+
 # -----------------------------
 # Decorators
 # -----------------------------
@@ -22,7 +23,9 @@ def login_required(f):
             flash("You need to log in!", "warning")
             return redirect(url_for("login_route"))
         return f(*args, **kwargs)
+
     return wrapper
+
 
 def role_required(role):
     def decorator(f):
@@ -32,8 +35,11 @@ def role_required(role):
                 flash("You do not have access!", "danger")
                 return redirect(url_for("index_route"))
             return f(*args, **kwargs)
+
         return wrapper
+
     return decorator
+
 
 # -----------------------------
 # Routes: Auth
@@ -66,6 +72,7 @@ def register_route():
 
     return render_template("register.html", username_value=username_value, role_value=role_value)
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login_route():
     username_value = ""
@@ -91,11 +98,58 @@ def login_route():
 
     return render_template("login.html", username_value=username_value)
 
+
 @app.route("/logout")
 def logout_route():
     session.clear()
     flash("You have logged out!", "success")
     return redirect(url_for("login_route"))
+
+
+# -----------------------------
+# Routes: Forgot Password
+# -----------------------------
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password_route():
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        if not username:
+            flash("Please enter your username!", "warning")
+        else:
+            user = get_user_by_username(username)
+            if not user:
+                flash("Username does not exist!", "danger")
+            else:
+                # Nếu đúng username → chuyển sang route reset password
+                return redirect(url_for("reset_password_route", username=username))
+    return render_template("forgot_password.html")
+
+
+@app.route("/reset-password/<username>", methods=["GET", "POST"])
+def reset_password_route(username):
+    user = get_user_by_username(username)
+    if not user:
+        flash("Invalid username!", "danger")
+        return redirect(url_for("forgot_password_route"))
+
+    if request.method == "POST":
+        password = request.form.get("password", "").strip()
+        confirm = request.form.get("confirm_password", "").strip()
+
+        if not password or not confirm:
+            flash("Please fill in all fields!", "warning")
+        elif password != confirm:
+            flash("Passwords do not match!", "danger")
+        elif check_password_hash(user["password"], password):
+            flash("New password cannot be the same as the old password!", "danger")
+        else:
+            hashed = generate_password_hash(password)
+            update_user(user["id"], password=hashed)
+            flash("Password has been reset successfully!", "success")
+            return redirect(url_for("login_route"))
+
+    return render_template("reset_password.html", username=username)
+
 
 # -----------------------------
 # Routes: Dashboard
@@ -109,6 +163,7 @@ def index_route():
         tasks = get_tasks_by_user(session["user_id"])
     return render_template("tasks.html", tasks=tasks, username=session["username"], role=session["role"])
 
+
 # -----------------------------
 # Routes: Tasks
 # -----------------------------
@@ -121,7 +176,7 @@ def add_task_route():
 
     # Lấy danh sách task của user
     if session['role'] == 'admin':
-        tasks = get_all_tasks_admin()   # admin xem tất cả
+        tasks = get_all_tasks_admin()  # admin xem tất cả
     else:
         tasks = get_tasks_by_user(session['user_id'])  # user chỉ thấy của mình
 
@@ -140,6 +195,7 @@ def add_task_route():
     create_task(title, description, status, session['user_id'])
     flash("Task added successfully!", "success")
     return redirect(url_for("index_route"))
+
 
 @app.route("/edit_task/<int:task_id>", methods=["GET", "POST"])
 @login_required
@@ -163,6 +219,7 @@ def edit_task_route(task_id):
 
     return render_template("edit_task.html", task=task)
 
+
 @app.route("/delete_task/<int:task_id>")
 @login_required
 @role_required("admin")
@@ -175,10 +232,12 @@ def delete_task_route(task_id):
         flash("Task deleted!", "success")
     return redirect(url_for("index_route"))
 
+
 # -----------------------------
 # Routes: Admin User Management
 # -----------------------------
 from werkzeug.security import generate_password_hash
+
 
 @app.route('/admin/users', methods=['GET', 'POST'])
 @login_required
@@ -273,6 +332,7 @@ def admin_users_route():
                            username_value=username_value,
                            role_value=role_value)
 
+
 @app.route("/admin/delete_user/<int:user_id>")
 @login_required
 @role_required("admin")
@@ -295,6 +355,36 @@ def admin_delete_user_route(user_id):
     delete_user(user_id)
     flash("User deleted!", "success")
     return redirect(url_for("admin_users_route"))
+
+#Thông báo lỗi
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template(
+        "error.html",
+        error_code=404,
+        error_title="Not Found",
+        error_message="The requested URL was not found on the server."
+    ), 404
+
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template(
+        "error.html",
+        error_code=403,
+        error_title="Access Denied",
+        error_message="You do not have permission to access this page."
+    ), 403
+
+@app.errorhandler(500)
+def internal_error(e):
+    return render_template(
+        "error.html",
+        error_code=500,
+        error_title="Internal Server Error",
+        error_message="Something went wrong on the server."
+    ), 500
+
+
 
 # -----------------------------
 # Run
