@@ -1,4 +1,7 @@
-body { background-color: #f8f9fa; }
+/* Body background */
+body {
+    background-color: #f8f9fa;
+}
 
 /* Inputs & Focus */
 .form-control:focus, .form-select:focus {
@@ -7,7 +10,7 @@ body { background-color: #f8f9fa; }
     outline: none;
 }
 
-/* Clear input button */
+/* Clear input button for input and textarea */
 .clear-input {
     position: absolute;
     right: 12px;
@@ -28,7 +31,9 @@ body { background-color: #f8f9fa; }
 }
 
 .position-relative input:focus + .clear-input,
-.position-relative input:not(:placeholder-shown) + .clear-input {
+.position-relative input:not(:placeholder-shown) + .clear-input,
+.position-relative textarea:focus + .clear-input,
+.position-relative textarea:not(:placeholder-shown) + .clear-input {
     display: block;
 }
 
@@ -68,17 +73,18 @@ body { background-color: #f8f9fa; }
     z-index: 1100;
 }
 
+/* Table buttons */
 .table td .btn {
-    min-width: 60px;       /* các nút không quá bé */
-    white-space: nowrap;    /* không xuống hàng */
+    min-width: 60px;
+    white-space: nowrap;
 }
 
-
-.btn-gradient {
-    background: linear-gradient(135deg, #4b6cb7, #182848); /* gradient sắc nét hơn */
+/* Gradient Save button */
+.btn-gradient, .btn-modal-save {
+    background: linear-gradient(135deg, #4b6cb7, #182848);
     color: white;
     border: none;
-    border-radius: 12px; /* bo tròn mềm mại */
+    border-radius: 12px;
     padding: 10px 20px;
     font-weight: 600;
     font-size: 16px;
@@ -88,24 +94,23 @@ body { background-color: #f8f9fa; }
     text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-.btn-gradient:hover {
-    background: linear-gradient(135deg, #182848, #4b6cb7); /* đảo gradient khi hover */
-    transform: translateY(-3px) scale(1.05); /* nhấc nhẹ + phồng */
+.btn-gradient:hover, .btn-modal-save:hover {
+    background: linear-gradient(135deg, #182848, #4b6cb7);
+    transform: translateY(-3px) scale(1.05);
     box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
-.btn-gradient:active {
-    transform: translateY(0) scale(0.98); /* cảm giác nhấn */
+.btn-gradient:active, .btn-modal-save:active {
+    transform: translateY(0) scale(0.98);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-
-
-.btn-cancel {
-    background: linear-gradient(135deg, #6c757d, #495057); /* gradient xám sang hơn */
+/* Cancel button */
+.btn-cancel, .btn-modal-cancel {
+    background: linear-gradient(135deg, #6c757d, #495057);
     color: white;
     border: none;
-    border-radius: 12px; /* bo góc mềm mại */
+    border-radius: 12px;
     padding: 10px 20px;
     font-weight: 600;
     font-size: 16px;
@@ -115,68 +120,59 @@ body { background-color: #f8f9fa; }
     text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-.btn-cancel:hover {
-    background: linear-gradient(135deg, #495057, #6c757d); /* đảo gradient khi hover */
-    transform: translateY(-3px) scale(1.05); /* nhấc nhẹ + phồng */
+.btn-cancel:hover, .btn-modal-cancel:hover {
+    background: linear-gradient(135deg, #495057, #6c757d);
+    transform: translateY(-3px) scale(1.05);
     box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
-.btn-cancel:active {
-    transform: translateY(0) scale(0.98); /* cảm giác nhấn */
+.btn-cancel:active, .btn-modal-cancel:active {
+    transform: translateY(0) scale(0.98);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-
+/* Delete button */
 .btn-delete {
-    background: linear-gradient(135deg, #FF416C, #FF4B2B); /* gradient đỏ rực hơn */
+    background: linear-gradient(135deg, #FF416C, #FF4B2B);
     color: white;
     border: none;
-    border-radius: 12px; /* bo tròn mềm mại */
+    border-radius: 12px;
     padding: 10px 20px;
     font-weight: 600;
     font-size: 16px;
     cursor: pointer;
     transition: all 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 .btn-delete:hover {
-    background: linear-gradient(135deg, #FF4B2B, #FF416C); /* gradient đảo nhẹ khi hover */
-    transform: translateY(-3px) scale(1.05); /* nhấn nhẹ + nâng lên */
+    background: linear-gradient(135deg, #FF4B2B, #FF416C);
+    transform: translateY(-3px) scale(1.05);
     box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
 .btn-delete:active {
-    transform: translateY(0) scale(0.98); /* cảm giác nhấn xuống */
+    transform: translateY(0) scale(0.98);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* Status dropdown kiểu admin_users */
+/* Status dropdown */
 .status-dropdown .dropdown-item {
     font-weight: 600;
     transition: all 0.2s;
 }
 
 .status-dropdown .dropdown-item.completed {
-    color: #198754; /* xanh lá nổi bật */
+    color: #198754;
 }
 
 .status-dropdown .dropdown-item.pending {
-    color: #ffc107; /* vàng nổi bật */
+    color: #ffc107;
 }
 
 .status-dropdown .dropdown-item:hover {
     background-color: #6c757d33;
     color: #fff !important;
     border-radius: 8px;
-}
-
-/* Modal Edit/Cancel button trong task */
-.btn-modal-save {
-    @extend .btn-gradient; /* giữ nguyên gradient Save */
-}
-
-.btn-modal-cancel {
-    @extend .btn-cancel; /* giữ nguyên gradient Cancel */
 }
