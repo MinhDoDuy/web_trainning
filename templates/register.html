@@ -21,24 +21,24 @@
                         <input type="text" name="username" class="form-control"
                                placeholder="Username"
                                value="{{ username_value or '' }}">
-                        <span class="clear-input" onclick="clearInput(this)">×</span>
+                        <span class="clear-input" onclick="clearInput(this)"><i class="bi bi-x-circle-fill"></i></span>
                     </div>
+
 
                     <!-- Password -->
                     <div class="mb-3 position-relative input-group">
                         <input type="password" name="password" class="form-control"
                                placeholder="Password" id="passwordInput">
                         <i class="bi bi-eye eye-toggle" onclick="togglePassword('passwordInput', this)"></i>
-                        <span class="clear-input" onclick="clearInput(this)">×</span>
                     </div>
 
                     <!-- Confirm Password -->
-<!--                    <div class="mb-3 position-relative input-group">-->
-<!--                        <input type="password" name="confirm_password" class="form-control"-->
-<!--                               placeholder="Confirm Password" id="confirmPasswordInput">-->
-<!--                        <i class="bi bi-eye eye-toggle" onclick="togglePassword('confirmPasswordInput', this)"></i>-->
-<!--                        <span class="clear-input" onclick="clearInput(this)">×</span>-->
-<!--                    </div>-->
+                    <!--                    <div class="mb-3 position-relative input-group">-->
+                    <!--                        <input type="password" name="confirm_password" class="form-control"-->
+                    <!--                               placeholder="Confirm Password" id="confirmPasswordInput">-->
+                    <!--                        <i class="bi bi-eye eye-toggle" onclick="togglePassword('confirmPasswordInput', this)"></i>-->
+                    <!--                        <span class="clear-input" onclick="clearInput(this)">×</span>-->
+                    <!--                    </div>-->
 
                     <button type="submit" class="btn btn-gradient w-100">Register</button>
                 </form>
@@ -59,15 +59,15 @@
 <div class="toast-container">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        {% for category, message in messages %}
-        <div class="toast align-items-center text-bg-{{ category }} border-0 mb-2" role="alert">
-            <div class="d-flex">
-                <div class="toast-body">{{ message }}</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                        data-bs-dismiss="toast"></button>
-            </div>
+    {% for category, message in messages %}
+    <div class="toast align-items-center text-bg-{{ category }} border-0 mb-2" role="alert">
+        <div class="d-flex">
+            <div class="toast-body">{{ message }}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
         </div>
-        {% endfor %}
+    </div>
+    {% endfor %}
     {% endif %}
     {% endwith %}
 </div>
@@ -86,11 +86,12 @@
         }
     }
 
-    function clearInput(el) {
+       function clearInput(el) {
         const input = el.previousElementSibling;
         input.value = "";
         input.focus();
     }
+
 
     function setRole(value) {
         document.getElementById('roleInput').value = value;

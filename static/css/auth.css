@@ -73,27 +73,43 @@
             transition: 0.3s ease;
         }
 
-        .eye-toggle { right: 15px; }
+        .eye-toggle { right: 11px; }
         .eye-toggle:hover {
             transform: translateY(-50%) scale(1.2);
             color: #4b6cb7;
         }
 
         /* X clear input */
-        .clear-input {
-            right: 10px;
-            color: #ccc;
-            display: none;
-        }
-        .clear-input:hover {
-            transform: translateY(-50%) scale(1.2);
-            color: #4b6cb7;
-        }
+        .input-group {
+    position: relative;
+}
 
-        .position-relative input:focus + .clear-input,
-        .position-relative input:not(:placeholder-shown) + .clear-input {
-            display: block;
-        }
+/* Dấu × luôn hiện, mượt, fade khi hover */
+.clear-input {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 1.rem;
+    color: #aaa;
+    cursor: pointer;
+    display: block;  /* luôn hiện */
+    transition: all 0.3s ease; /* mượt */
+    opacity: 0.8;
+}
+
+.clear-input:hover {
+    opacity: 1;
+    color: #4b6cb7;
+    transform: translateY(-50%) scale(1.3);
+}
+
+/* Nếu muốn fade-in khi người dùng nhập */
+.form-control:not(:placeholder-shown) + .clear-input {
+    opacity: 1;
+    transition: opacity 0.25s ease-in-out;
+}
+
 
         .link-hover {
             display: inline-flex;

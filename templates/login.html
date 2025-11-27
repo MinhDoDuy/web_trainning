@@ -21,26 +21,27 @@
                         <input type="text" name="username" class="form-control"
                                placeholder="Username"
                                value="{{ username_value or '' }}">
-                        <span class="clear-input" onclick="clearInput(this)">×</span>
+                        <span class="clear-input" onclick="clearInput(this)"><i class="bi bi-x-circle-fill"></i></span>
                     </div>
+
 
                     <!-- Password -->
                     <div class="mb-3 position-relative input-group">
                         <input type="password" name="password" class="form-control"
                                placeholder="Password" id="passwordInput">
                         <i class="bi bi-eye eye-toggle" onclick="togglePassword()"></i>
-                        <span class="clear-input" onclick="clearInput(this)">×</span>
+                        <!--                        <span class="clear-input" onclick="clearInput(this)">×</span>-->
                     </div>
 
                     <button type="submit" class="btn btn-gradient w-100">Login</button>
                 </form>
 
                 <div class="text-center mt-3">
-                    <a href="{{ url_for('register_route') }}" class="btn btn-secondary btn-sm ms-1 link-hover">
-                        <i class="bi bi-person-plus"></i> Register
-                    </a>
                     <a href="{{ url_for('forgot_password_route') }}" class="btn btn-secondary btn-sm ms-2 link-hover">
                         <i class="bi bi-key"></i> Forgot password?
+                    </a>
+                    <a href="{{ url_for('register_route') }}" class="btn btn-secondary btn-sm ms-1 link-hover">
+                        <i class="bi bi-person-plus"></i> Register
                     </a>
                 </div>
 
@@ -87,6 +88,7 @@
         input.value = "";
         input.focus();
     }
+
 
     document.querySelectorAll('.toast').forEach(t => {
         new bootstrap.Toast(t, {delay: 3000}).show();
