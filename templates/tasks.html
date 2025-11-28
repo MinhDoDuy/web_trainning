@@ -48,14 +48,14 @@
         <!-- Nội dung dashboard -->
 
 
-<!--        &lt;!&ndash; Admin: Manage Users &ndash;&gt;-->
-<!--        {% if role == 'admin' %}-->
-<!--        <div class="mb-4" style="margin-top: -20px;">-->
-<!--            <a href="{{ url_for('admin_users_route') }}" class="btn btn-dark">-->
-<!--                <i class="bi bi-people-fill"></i> Manage Users-->
-<!--            </a>-->
-<!--        </div>-->
-<!--        {% endif %}-->
+        <!--        &lt;!&ndash; Admin: Manage Users &ndash;&gt;-->
+        <!--        {% if role == 'admin' %}-->
+        <!--        <div class="mb-4" style="margin-top: -20px;">-->
+        <!--            <a href="{{ url_for('admin_users_route') }}" class="btn btn-dark">-->
+        <!--                <i class="bi bi-people-fill"></i> Manage Users-->
+        <!--            </a>-->
+        <!--        </div>-->
+        <!--        {% endif %}-->
 
         <!-- Flash messages -->
         <div class="toast-container-bottom">
@@ -134,8 +134,8 @@
                 {% for task in tasks %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td class="text-truncate" style="max-width: 150px;">{{ task.title }}</td>
-                    <td class="text-truncate" style="max-width: 250px;">{{ task.description }}</td>
+                    <td style="max-width:150px; white-space:normal; word-break:break-word;">{{ task.title }}</td>
+                    <td style="max-width:250px; white-space:normal; word-break:break-word;">{{ task.description }}</td>
                     <td>
                         {% if task.status == 'completed' %}
                         <span class="badge bg-success">Completed</span>
