@@ -176,3 +176,227 @@ body {
     color: #fff !important;
     border-radius: 8px;
 }
+
+/* Nút view màu hồng và hover */
+.btn-view {
+    background-color: #8DEEEE;
+    color: #000;
+}
+.btn-view:hover {
+    background-color: #79CDCD; /* hồng đậm khi hover */
+    color: #fff;
+}
+
+/*ô title và description*/
+.modal-text-wrap {
+    word-break: break-word;
+    white-space: normal;
+}
+
+/*bảng view*/
+/* Hover header */
+.header-hover:hover h5 {
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    transform: translateY(-1px);
+}
+
+/* Modal text wrapping */
+.modal-body .text-break {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+/* Optional: body background */
+.modal-body {
+    background-color: #fff5f7;
+    border-radius: 0 0 1rem 1rem;
+}
+
+/*edit_tasks*/
+/* Hover header shadow */
+.header-hover:hover h5 {
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    transform: translateY(-1px);
+}
+
+/* Input/textarea shadow & smooth */
+.modal-body .form-control {
+    transition: all 0.2s;
+    border-radius: 0.4rem;
+}
+.modal-body .form-control:focus {
+    box-shadow: 0 0 6px rgba(255,192,203,0.4);
+    border-color: #ffc0cb;
+}
+
+/* file: tasks.css hoặc css riêng bạn đang dùng */
+.modal-header-custom {
+    background: linear-gradient(90deg,#fff0f5,#ffe4e1);
+    border-bottom: 1px solid #f0c0c0;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    flex-wrap: wrap; /* cho phép wrap nếu dùng flex */
+}
+
+.modal-header-custom .modal-title {
+    transition: all 0.3s;
+    word-break: break-word; /* ngắt chữ dài */
+    white-space: normal;    /* xuống dòng bình thường */
+    margin: 0;
+}
+
+
+/*delete*/
+/* Hover header shadow */
+.header-hover:hover h5 {
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    transform: translateY(-1px);
+}
+
+/* Buttons */
+.btn-cancel {
+    background-color: #f0f0f0;
+    border-radius: 0.5rem;
+    padding: 0.35rem 0.75rem;
+}
+.btn-cancel:hover {
+    background-color: #e0e0e0;
+}
+.btn-delete {
+    background-color: #ff6b6b;
+    color: #fff;
+    border-radius: 0.5rem;
+    padding: 0.35rem 0.75rem;
+}
+.btn-delete:hover {
+    background-color: #ff4c4c;
+}
+
+/*view*/
+/* tasks.css */
+.modal-header-custom {
+    background: linear-gradient(90deg, #fff0f5, #ffe4e1);
+    border-bottom: 1px solid #f0c0c0;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    padding: 1rem;
+    transition: all 0.3s;
+}
+
+.modal-header-custom h5 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 0;
+    word-break: break-word; /* chữ dài xuống dòng */
+    white-space: normal;
+}
+/* file tasks.css */
+.modal-text-box {
+    padding: 0.5rem;           /* padding tương đương p-2 */
+    border: 1px solid #dee2e6; /* tương đương border */
+    border-radius: 0.375rem;   /* tương đương rounded */
+    background-color: #f8f9fa; /* bg-light */
+    word-break: break-word;     /* ngắt chữ dài */
+    white-space: normal;        /* xuống dòng bình thường */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08); /* shadow nhẹ */
+}
+.modal-text-box small {
+    font-weight: 600;           /* fw-semibold */
+    color: #6c757d;             /* text-secondary */
+}
+
+/* Nút Add Task */
+.btn-add-task {
+    background: linear-gradient(135deg, #4b6cb7, #182848);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;   /* vừa form, không quá tròn */
+    font-weight: 600;
+    font-size: 0.95rem;      /* vừa form, không quá to */
+    padding: 0.45rem 0.75rem; /* canh vừa icon + text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    transition: all 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.btn-add-task:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+.btn-add-task:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+
+/**/
+/* Nút nhỏ mượt cho Edit / View / Outline buttons */
+.btn-sm-smooth {
+    transition: all 0.3s ease, transform 0.2s ease;
+}
+
+.btn-sm-smooth:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+.btn-sm-smooth:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Nút mượt cho Manage Users và các nút dark khác */
+.btn-dark-move {
+    background-color: #343a40; /* giữ dark */
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 6px rgba(108,117,125,0.3);
+}
+
+.btn-dark-move:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+    background-color: #343a40; /* giữ nguyên nền */
+    color: white; /* giữ nguyên chữ */
+}
+
+.btn-dark-move:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+
+/* Nút Log Out mượt */
+.btn-logout {
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+    transition: all 0.3s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.btn-logout:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 5px 15px rgba(220,53,69,0.3); /* đỏ nhẹ */
+}
+
+.btn-logout:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 3px 8px rgba(220,53,69,0.2);
+}
+

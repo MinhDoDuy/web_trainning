@@ -107,3 +107,63 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
+/* Nút Add/Update User */
+.btn-user-action {
+    background: linear-gradient(135deg, #4b6cb7, #182848);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.45rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    transition: all 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.btn-user-action:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+.btn-user-action:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Nút Dashboard mượt */
+.btn-dashboard {
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+    transition: all 0.3s ease, transform 0.2s ease;
+}
+
+.btn-dashboard:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 5px 15px rgba(108,117,125,0.3); /* xám nhẹ */
+}
+
+.btn-dashboard:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 3px 8px rgba(108,117,125,0.2);
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem; /* chỉnh kích thước icon */
+    color: #343a40; /* màu icon */
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-3px) scale(1.2);
+    color: #000; /* có thể đổi màu icon khi hover, hoặc giữ nguyên */
+}
+

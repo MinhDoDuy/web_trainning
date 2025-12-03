@@ -15,7 +15,9 @@
         <h2 class="page-title"><i class="bi bi-people-fill"></i> Manage Users
             {% if edit_user %}- Edit User{% endif %}
         </h2>
-        <a href="{{ url_for('index_route') }}" class="btn btn-secondary">Dashboard</a>
+        <a href="{{ url_for('index_route') }}" class="btn btn-secondary btn-dashboard">
+            <i class="bi bi-house-door-fill me-1"></i> Dashboard
+        </a>
     </div>
 
     <!-- Toast messages -->
@@ -46,12 +48,13 @@
             <input type="hidden" name="user_id" value="{{ edit_user.id }}">
             {% endif %}
             <div class="col-md-4 position-relative">
-                <input type="text" name="username" class="form-control" placeholder="Username"
+                <input type="text" name="username" class="form-control" placeholder="-- Username"
                        value="{{ username_value }}" id="usernameInput">
                 <span class="clear-input" onclick="clearInput('usernameInput')">&times;</span>
             </div>
             <div class="col-md-3 position-relative">
-                <input type="password" name="password" class="form-control" placeholder="Password" id="passwordInput">
+                <input type="password" name="password" class="form-control" placeholder="-- Password"
+                       id="passwordInput">
                 <span class="clear-input" onclick="clearInput('passwordInput')">&times;</span>
             </div>
 
@@ -71,7 +74,8 @@
 
 
             <div class="col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-success flex-fill">{{ 'Update' if edit_user else 'Add User' }}
+                <button type="submit" class="btn btn-user-action flex-fill bi bi-plus-circle">
+                    {{ 'Update' if edit_user else 'Add User' }}
                 </button>
                 {% if edit_user %}
                 <a href="{{ url_for('admin_users_route') }}" class="btn btn-secondary flex-fill">Cancel</a>
@@ -122,6 +126,7 @@
                     <a href="{{ url_for('admin_users_route') }}?edit={{ user.id }}" class="action-btn edit me-2">
                         <i class="bi bi-pencil-square"></i>
                     </a>
+
                     <a href="#" class="action-btn delete" data-bs-toggle="modal" data-bs-target="#deleteModal"
                        data-user-url="{{ url_for('admin_delete_user_route', user_id=user.id) }}">
                         <i class="bi bi-trash-fill"></i>
