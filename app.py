@@ -35,9 +35,7 @@ def role_required(role):
                 flash("You do not have access!", "danger")
                 return redirect(url_for("index_route"))
             return f(*args, **kwargs)
-
         return wrapper
-
     return decorator
 
 
@@ -100,7 +98,7 @@ def login_route():
 
 
 @app.route("/logout")
-def logout_route():
+def logout():
     session.clear()
     flash("You have logged out!", "success")
     return redirect(url_for("login_route"))
@@ -205,9 +203,9 @@ def edit_task_route(task_id):
         flash("Task does not exist!", "danger")
         return redirect(url_for("index_route"))
 
-    # if session["role"] != "admin" and task["user_id"] != session["user_id"]:
-    #     flash("You do not have permission to edit this task!", "danger")
-    #     return redirect(url_for("index_route"))
+    if session["role"] != "admin" and task["user_id"] != session["user_id"]:
+        flash("You do not have permission to edit this task!", "danger")
+        return redirect(url_for("index_route"))
 
     if request.method == "POST":
         title = request.form.get("title")
@@ -236,7 +234,7 @@ def delete_task_route(task_id):
 # -----------------------------
 # Routes: Admin User Management
 # -----------------------------
-from werkzeug.security import generate_password_hash
+# from werkzeug.security import generate_password_hash
 
 
 @app.route('/admin/users', methods=['GET', 'POST'])
@@ -383,8 +381,6 @@ def internal_error(e):
         error_title="Internal Server Error",
         error_message="Something went wrong on the server."
     ), 500
-
-
 
 # -----------------------------
 # Run
