@@ -74,7 +74,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="dropdown status-dropdown">
-                            <button class="btn btn-outline-secondary w-100" type="button" id="statusDropdown"
+                            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="statusDropdown"
                                     data-bs-toggle="dropdown" aria-expanded="false">Pending
                             </button>
                             <ul class="dropdown-menu w-100" aria-labelledby="statusDropdown">
@@ -193,18 +193,18 @@
                             <div class="modal-body">
                                 <form action="{{ url_for('edit_task_route', task_id=task.id) }}" method="post">
                                     <div class="mb-3">
-                                        <label class="form-label status-select">Title</label>
+                                        <label class="form-label">Title</label>
                                         <textarea name="title" class="form-control status-select" rows="4">{{ task.title }}</textarea>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label status-select">Description</label>
+                                        <label class="form-label">Description</label>
                                         <textarea name="description" class="form-control status-select" rows="4">{{ task.description }}</textarea>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Status</label>
-                                        <select name="status" class="form-select status-select">
-                                            <option value="pending" {% if task.status=='pending' %}selected{% endif %}>Pending</option>
+                                        <select name="status" class="form-select status-select pretty-status">
                                             <option value="completed" {% if task.status=='completed' %}selected{% endif %}>Completed</option>
+                                            <option value="pending" {% if task.status=='pending' %}selected{% endif %}>Pending</option>
                                         </select>
                                     </div>
                                     <button type="submit" class="btn btn-gradient">
@@ -326,6 +326,16 @@
             });
         }
     });
+
+    const select = document.querySelector('.pretty-status');
+
+    function updateColor() {
+        select.classList.remove('completed','pending');
+        select.classList.add(select.value);
+    }
+
+    updateColor();
+    select.addEventListener('change', updateColor);
 </script>
 
 </body>

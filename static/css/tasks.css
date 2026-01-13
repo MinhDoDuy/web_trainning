@@ -158,23 +158,52 @@ body {
 }
 
 /* Status dropdown */
-.status-dropdown .dropdown-item {
-    font-weight: 600;
-    transition: all 0.2s;
+.status-dropdown .dropdown-menu {
+    padding: 6px;
+    border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+    border: none;
 }
 
+.status-dropdown .dropdown-item {
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+}
+
+/* trạng thái */
 .status-dropdown .dropdown-item.completed {
-    color: #198754;
+    color: #16a34a;
 }
 
 .status-dropdown .dropdown-item.pending {
-    color: #ffc107;
+    color: #eab308;
 }
 
+/* hiệu ứng hover */
 .status-dropdown .dropdown-item:hover {
-    background-color: #6c757d33;
+    background: linear-gradient(135deg, #495057, #343a40);
     color: #fff !important;
-    border-radius: 8px;
+}
+
+/* thêm icon tròn nhỏ trước */
+.status-dropdown .dropdown-item::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-dropdown .dropdown-item.completed::before {
+    background-color: #16a34a;
+}
+
+.status-dropdown .dropdown-item.pending::before {
+    background-color: #eab308;
 }
 
 /* Nút view màu hồng và hover */
@@ -531,29 +560,116 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/**/
-.status-select {
-    appearance: none;
-    /*background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%234b6cb7' viewBox='0 0 16 16'%3E%3Cpath d='M3 6l5 5 5-5H3z'/%3E%3C/svg%3E");*/
-    background-repeat: no-repeat;
-    background-position: right .75rem center;
-    background-size: 14px;
-}
-
-/* Hover */
-.status-select:hover {
-    border-color: #ffc0cb;
-    box-shadow: 0 0 6px rgba(255,192,203,0.4);
-}
-
-/* Focus */
-.status-select:focus {
-    border-color: #ffc0cb;
-    box-shadow: 0 0 6px rgba(255,192,203,0.4);
-}
 
 /* Bo nhẹ option cho đồng bộ */
 .status-select option {
     border-radius: 0.5rem;
 }
+
+/* Select Status đẹp + mượt */
+.status-select {
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    border: 2px solid #dee2e6;
+    background-color: #ffffff;
+}
+
+/* Hover */
+.status-select:hover {
+    border-color: #4b6cb7;
+    box-shadow: 0 0 6px rgba(75,108,183,0.35);
+}
+
+/* Focus */
+.status-select:focus {
+    border-color: #4b6cb7;
+    box-shadow: 0 0 10px rgba(75,108,183,0.45);
+}
+
+/* Completed màu xanh */
+.status-select option[value="completed"] {
+    color: #198754;
+    font-weight: 700;
+}
+
+/* Pending màu vàng */
+.status-select option[value="pending"] {
+    color: #d39e00;
+    font-weight: 700;
+}
+
+.task-status-chooser {
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* màu chữ khi đang SELECTED */
+.task-status-chooser option[value="completed"] {
+    color: #198754;
+    font-weight: 700;
+}
+
+.task-status-chooser option[value="pending"] {
+    color: #ffc107;
+    font-weight: 700;
+}
+
+/* ---------- KHUNG SELECT ---------- */
+.pretty-status {
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border: 2px solid #e3e6f0;
+    transition: 0.25s ease;
+    appearance: none;
+    position: relative;
+}
+
+/* hover */
+.pretty-status:hover {
+    border-color: #4b6cb7;
+    box-shadow: 0 0 6px rgba(75,108,183,0.35);
+}
+
+/* focus */
+.pretty-status:focus {
+    border-color: #4b6cb7;
+    box-shadow: 0 0 12px rgba(75,108,183,0.45);
+}
+
+/* ---------- ICON MŨI TÊN CUSTOM ---------- */
+.pretty-status {
+    background-image: url("data:image/svg+xml,%3Csvg fill='black' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+}
+
+/* ---------- MÀU OPTION ---------- */
+.pretty-status option[value="completed"] {
+    color: #198754;
+    font-weight: 700;
+}
+
+.pretty-status option[value="pending"] {
+    color: #d39e00;
+    font-weight: 700;
+}
+
+/* ---------- ĐỔI MÀU NỀN THEO TRẠNG THÁI ---------- */
+.pretty-status.completed {
+    background: linear-gradient(135deg, #e7f7ef, #ffffff);
+    border-color: #198754;
+}
+
+.pretty-status.pending {
+    background: linear-gradient(135deg, #fff7e0, #ffffff);
+    border-color: #d39e00;
+}
+
 
