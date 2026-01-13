@@ -40,12 +40,10 @@
 
     <!-- Add / Edit User Form -->
     <div class="card p-3 mb-4">
-        <!--        {% if edit_user and edit_user.role == 'admin' %}-->
-        <!--        <div class="alert alert-warning">You cannot edit the Admin user!</div>-->
-        <!--        {% else %}-->
         <form action="{{ url_for('admin_users_route') }}" method="post" class="row g-3">
             {% if edit_user %}
             <input type="hidden" name="user_id" value="{{ edit_user.id }}">
+
             {% endif %}
             <div class="col-md-4 position-relative">
                 <input type="text" name="username" class="form-control" placeholder="-- Username"
@@ -53,11 +51,9 @@
                 <span class="clear-input" onclick="clearInput('usernameInput')">&times;</span>
             </div>
             <div class="col-md-3 position-relative">
-                <input type="password" name="password" class="form-control" placeholder="-- Password"
-                       id="passwordInput">
+                <input type="password" name="password" class="form-control" placeholder="-- Password" id="passwordInput">
                 <span class="clear-input" onclick="clearInput('passwordInput')">&times;</span>
             </div>
-
             <div class="col-md-3">
                 <div class="dropdown">
                     <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="roleDropdown"
@@ -71,72 +67,72 @@
                     <input type="hidden" name="role" id="roleInput" value="{{ role_value }}">
                 </div>
             </div>
-
-
             <div class="col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-user-action flex-fill bi bi-plus-circle ">
+                <button type="submit" class="btn btn-user-action flex-fill bi bi-plus-circle">
                     {{ 'Update' if edit_user else 'Add User' }}
                 </button>
                 {% if edit_user %}
-                <a href="{{ url_for('admin_users_route') }}" class="btn btn-secondary flex-fill">Cancel</a>
+                <a href="{{ url_for('admin_users_route') }}" class="btn btn-cancel-action flex-fill">Cancel</a>
                 {% endif %}
             </div>
+
         </form>
-        {% endif %}
+    </div>
+
+    <!-- Search Input -->
+    <div class="d-flex gap-2 mb-3">
+        <div class="position-relative flex-grow-1">
+            <input id="userSearch" class="form-control" placeholder="-- Search username...">
+            <span class="clear-input" onclick="clearInput('userSearch')">&times;</span>
+        </div>
     </div>
 
     <!-- Users Table -->
     <div class="card p-3">
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Role</th>
-                <th style="width:120px;">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- Admin -->
-            {% for user in users if user.role == 'admin' %}
-            <tr>
-                <td>{{ loop.index }}</td>  <!-- hoặc chỉ hiển thị 1 cho admin thôi -->
-                <td>{{ user.username }}</td>
-                <td><span class="badge bg-danger">Admin</span></td>
-                <td>
-                    <!-- Admin không edit/delete -->
-                </td>
-            </tr>
-            {% endfor %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th style="width:120px;">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="userTableBody">
+                <!-- Admin -->
+                {% for user in users if user.role == 'admin' %}
+                <tr class="user-row" data-role="admin">
+                    <td>{{ loop.index }}</td>
+                    <td>{{ user.username }}</td>
+                    <td><span class="badge bg-danger">Admin</span></td>
+                    <td></td>
+                </tr>
+                {% endfor %}
 
-            <!-- Vạch phân cách -->
-            <tr>
-                <td colspan="4">
-                    <hr>
-                </td>
-            </tr>
+                <!-- Divider -->
+                <tr><td colspan="4"><hr></td></tr>
 
-            <!-- Users -->
-            {% for user in users if user.role != 'admin' %}
-            <tr>
-                <td>{{ loop.index }}</td>  <!-- ID 1,2,3… cho user thôi -->
-                <td>{{ user.username }}</td>
-                <td><span class="badge bg-secondary">User</span></td>
-                <td>
-                    <a href="{{ url_for('admin_users_route') }}?edit={{ user.id }}" class="action-btn edit me-2">
-                        <i class="bi bi-pencil-square"></i>
-                    </a>
-
-                    <a href="#" class="action-btn delete" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                       data-user-url="{{ url_for('admin_delete_user_route', user_id=user.id) }}">
-                        <i class="bi bi-trash-fill"></i>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-
-        </table>
+                <!-- Users -->
+                {% for user in users if user.role != 'admin' %}
+                <tr class="user-row" data-role="user">
+                    <td>{{ loop.index }}</td>
+                    <td>{{ user.username }}</td>
+                    <td><span class="badge bg-secondary">User</span></td>
+                    <td>
+                        <a href="{{ url_for('admin_users_route') }}?edit={{ user.id }}" class="action-btn edit me-2">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a href="#" class="action-btn delete" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                           data-user-url="{{ url_for('admin_delete_user_route', user_id=user.id) }}">
+                            <i class="bi bi-trash-fill"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -169,26 +165,46 @@
         document.getElementById('confirmDeleteBtn').setAttribute('href', url);
     });
 
-    // Auto show toast
+    // Toast
     document.querySelectorAll('.toast').forEach(toastEl => {
         new bootstrap.Toast(toastEl, {delay: 3000}).show();
     });
-</script>
 
-<script>
+    // Clear input
     function clearInput(id) {
         document.getElementById(id).value = '';
         document.getElementById(id).focus();
+        if(id === 'userSearch') applyUserFilter();
     }
-</script>
 
-
-<script>
+    // Set Role
     function setRole(value) {
         document.getElementById('roleInput').value = value;
         document.getElementById('roleDropdown').innerText = value.charAt(0).toUpperCase() + value.slice(1);
     }
+
+    // ===============================
+    // Live search for users (admin always visible)
+    // ===============================
+    const userSearchInput = document.getElementById("userSearch");
+
+    function applyUserFilter() {
+        const keyword = userSearchInput.value.toLowerCase().trim();
+        const allRows = Array.from(document.querySelectorAll("#userTableBody tr.user-row"));
+
+        allRows.forEach(row => {
+            const role = row.dataset.role;
+            const username = row.children[1].innerText.toLowerCase();
+
+            if(role === "admin") {
+                row.style.display = ""; // Admin luôn hiển thị
+            } else {
+                row.style.display = username.includes(keyword) ? "" : "none";
+            }
+        });
+    }
+
+    if(userSearchInput) userSearchInput.addEventListener("input", applyUserFilter);
 </script>
 </body>
 </html>
-

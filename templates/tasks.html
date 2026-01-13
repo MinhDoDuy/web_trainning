@@ -101,11 +101,48 @@
                 <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#chartModal">
                     <i class="bi bi-bar-chart-line"></i> View Chart
                 </button>
-
             </div>
         </div>
 
+        <div class="d-flex gap-2 mb-3">
+            <!-- Search input -->
+            <div class="position-relative flex-grow-1">
+                <input id="taskSearch" class="form-control" placeholder="-- Search tasks...">
+                <span class="clear-input" onclick="clearInput('taskSearch')">&times;</span>
+            </div>
+
+            <!-- Status Filter as dropdown -->
+            <!-- Status Filter -->
+            <div class="flex-grow-1 dropdown filter-dropdown">
+                <button class="btn btn-outline-secondary w-100 dropdown-toggle" type="button"
+                        id="filterStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">All Status
+                </button>
+                <ul class="dropdown-menu w-100" aria-labelledby="filterStatusDropdown">
+                    <li><a class="dropdown-item all" href="#" onclick="setFilterStatus('all', this)">All Status</a></li>
+                    <li><a class="dropdown-item completed" href="#" onclick="setFilterStatus('completed', this)">Completed</a></li>
+                    <li><a class="dropdown-item pending" href="#" onclick="setFilterStatus('pending', this)">Pending</a></li>
+                </ul>
+                <input type="hidden" id="statusFilter" value="all">
+            </div>
+
+            <!-- Sort Order -->
+            <div class="flex-grow-1 dropdown sort-dropdown">
+                <button class="btn btn-outline-secondary w-100 dropdown-toggle" type="button"
+                        id="sortOrderDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Oldest First
+                </button>
+                <ul class="dropdown-menu w-100" aria-labelledby="sortOrderDropdown">
+                    <li><a class="dropdown-item oldest" href="#" onclick="setSortOrder('oldest', this)">Oldest First</a></li>
+                    <li><a class="dropdown-item newest" href="#" onclick="setSortOrder('newest', this)">Newest First</a></li>
+                </ul>
+                <input type="hidden" id="sortOrder" value="oldest">
+            </div>
+        </div>
+
+
+
         <!-- Tasks Table -->
+        <div class="d-flex justify-content-center my-3" id="pagination"></div>
         <div class="table-responsive" style="margin-top: -10px;">
             <table class="table table-striped table-hover table-bordered align-middle">
                 <thead class="table-dark">
@@ -117,16 +154,19 @@
                     {% if role == 'admin' %}
                     <th>User</th>
                     {% endif %}
-                    <th>View</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for task in tasks %}
-                <tr>
+                <tr
+                    class="task-row"
+                    data-status="{{ task.status }}"
+                    data-created="{{ task.created_at.timestamp() if task.created_at else task.id }}">
                     <td>{{ loop.index }}</td>
-                    <td class="text-truncate" style="max-width: 150px;">{{ task.title }}</td>
-                    <td class="text-truncate" style="max-width: 250px;">{{ task.description }}</td>
+                    <td class="task-title text-truncate" style="max-width: 150px;">{{ task.title }}</td>
+                    <td class="task-desc text-truncate" style="max-width: 250px;">{{ task.description }}</td>
+
                     <td>
                         {% if task.status == 'completed' %}
                         <span class="badge bg-success">Completed</span>
@@ -137,14 +177,13 @@
                     {% if role == 'admin' %}
                     <td>{{ task.username }}</td>
                     {% endif %}
-                    <td class="text-center">
-                        <button class="btn btn-view btn-sm-smooth" data-bs-toggle="modal"
-                                data-bs-target="#viewModal{{ task.id }}">
-                            <i class="bi bi-eye"></i> View
-                        </button>
-                    </td>
+
                     <td class="text-center">
                         <div class="d-flex justify-content-center gap-2">
+                            <button class="btn btn-view btn-sm-smooth" data-bs-toggle="modal"
+                                data-bs-target="#viewModal{{ task.id }}">
+                                <i class="bi bi-eye"></i> View
+                            </button>
                             <button class="btn btn-sm btn-outline-dark btn-sm-smooth" data-bs-toggle="modal"
                                     data-bs-target="#editModal{{ task.id }}">
                                 <i class="bi bi-pencil"></i> Edit
@@ -259,84 +298,191 @@
         </div>
     </div>
 
+
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Toasts
+    /* =========================
+       1️Toasts
+    ========================= */
     document.querySelectorAll('.toast').forEach(toastEl => {
-        new bootstrap.Toast(toastEl, {delay: 3000}).show();
+        new bootstrap.Toast(toastEl, { delay: 3000 }).show();
     });
 
-    // Clear input
+    /* =========================
+       2️Clear Input Function
+    ========================= */
     function clearInput(id) {
-        document.getElementById(id).value = '';
-        document.getElementById(id).focus();
+        const input = document.getElementById(id);
+        input.value = '';
+        input.focus();
+        applyFilters(); // hiển thị lại tất cả tasks
     }
 
-    // Status dropdown
+    /* =========================
+       3️Status Dropdowns (Add/Edit Task)
+    ========================= */
     function setStatus(el) {
         document.getElementById('statusInput').value = el.innerText.toLowerCase();
         document.getElementById('statusDropdown').innerText = el.innerText;
     }
 
     function setEditStatus(id, value) {
-        document.getElementById('editStatusInput' + id).value = value;
-        document.getElementById('editStatusDropdown' + id).innerText = value.charAt(0).toUpperCase() + value.slice(1);
+        const input = document.getElementById('editStatusInput' + id);
+        const dropdown = document.getElementById('editStatusDropdown' + id);
+        if(input) input.value = value;
+        if(dropdown) dropdown.innerText = value.charAt(0).toUpperCase() + value.slice(1);
     }
 
-    // Delete modal dynamic link
-    var deleteModal = document.getElementById('deleteModal');
+    /* Update color cho select */
+    const select = document.querySelector('.pretty-status');
+    if (select) {
+        function updateColor() {
+            select.classList.remove('completed','pending');
+            select.classList.add(select.value);
+        }
+        updateColor();
+        select.addEventListener('change', updateColor);
+    }
+
+    /* =========================
+       4️Delete Modal Dynamic Link
+    ========================= */
+    const deleteModal = document.getElementById('deleteModal');
     if (deleteModal) {
         deleteModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var url = button.getAttribute('data-task-url');
-            var confirmBtn = document.getElementById('confirmDeleteBtn');
-            confirmBtn.setAttribute('href', url);
+            const button = event.relatedTarget;
+            const url = button.getAttribute('data-task-url');
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            if(confirmBtn) confirmBtn.setAttribute('href', url);
         });
     }
 
-    // Chart.js
-    var chartModal = document.getElementById('chartModal');
-    var modalChartInstance = null;
+    /* =========================
+       5️Chart.js Task Overview
+    ========================= */
+    const chartModal = document.getElementById('chartModal');
+    let modalChartInstance = null;
 
-    chartModal.addEventListener('shown.bs.modal', function () {
-        if (!modalChartInstance) {
-            const ctx = document.getElementById('taskChart').getContext('2d');
-            modalChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Completed', 'Pending'],
-                    datasets: [{
-                        label: 'Tasks Status',
-                        data: [{{ completed_count }}, {{ pending_count }}],
-                        backgroundColor: ['#28a745', '#ffc107']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    aspectRatio: 2,
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        tooltip: { mode: 'index' }
+    if(chartModal) {
+        chartModal.addEventListener('shown.bs.modal', function () {
+            if (!modalChartInstance) {
+                const ctx = document.getElementById('taskChart').getContext('2d');
+                modalChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Completed', 'Pending'],
+                        datasets: [{
+                            label: 'Tasks Status',
+                            data: [{{ completed_count }}, {{ pending_count }}],
+                            backgroundColor: ['#28a745', '#ffc107']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        aspectRatio: 2,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            tooltip: { mode: 'index' }
+                        }
                     }
-                }
-            });
-        }
-    });
-
-    const select = document.querySelector('.pretty-status');
-
-    function updateColor() {
-        select.classList.remove('completed','pending');
-        select.classList.add(select.value);
+                });
+            }
+        });
     }
 
-    updateColor();
-    select.addEventListener('change', updateColor);
+    /* =========================
+       6️Search / Filter / Sort
+    ========================= */
+    const searchInput = document.getElementById("taskSearch");
+    const statusFilter = document.getElementById("statusFilter"); // hidden input
+    const sortOrder = document.getElementById("sortOrder");       // hidden input
+
+    function normalize(text) {
+        return text.toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function applyFilters() {
+        const keyword = normalize(searchInput.value);
+        const status = statusFilter.value;
+
+        const rows = Array.from(document.querySelectorAll("table tbody tr"));
+
+        rows.forEach(row => {
+            const titleEl = row.querySelector(".task-title");
+            if(!titleEl) return;
+
+            const title = normalize(titleEl.innerText);
+            const rowStatus = row.dataset.status;
+
+            const matchText = title.includes(keyword);
+            const matchStatus = (status === "all" || status === rowStatus);
+
+            row.style.display = (matchText && matchStatus) ? "" : "none";
+        });
+
+        sortRows();
+    }
+
+    function sortRows() {
+        const tbody = document.querySelector("table tbody");
+        if(!tbody) return;
+
+        const rows = Array.from(tbody.querySelectorAll("tr"))
+            .filter(r => r.style.display !== "none");
+
+        const sorted = rows.sort((a, b) => {
+            const da = Number(a.dataset.created);
+            const db = Number(b.dataset.created);
+            return sortOrder.value === "newest" ? db - da : da - db;
+        });
+
+        sorted.forEach(r => tbody.appendChild(r));
+    }
+
+    /* =========================
+       7️Dropdown kiểu Add Task cho Filter + Sort
+    ========================= */
+
+    // Status Filter Dropdown
+    function setFilterStatus(value, el) {
+        document.getElementById('statusFilter').value = value;
+        document.getElementById('filterStatusDropdown').innerText = el.innerText;
+
+        // Remove selected class từ các item khác
+        document.querySelectorAll('.filter-dropdown .dropdown-item').forEach(i => i.classList.remove('selected'));
+        el.classList.add('selected');
+
+        applyFilters();
+    }
+
+    function setSortOrder(value, el) {
+        document.getElementById('sortOrder').value = value;
+        document.getElementById('sortOrderDropdown').innerText = el.innerText;
+
+        // Remove selected class từ các item khác
+        document.querySelectorAll('.sort-dropdown .dropdown-item').forEach(i => i.classList.remove('selected'));
+        el.classList.add('selected');
+
+        applyFilters();
+    }
+
+    /* =========================
+       8️Event Listeners
+    ========================= */
+    if(searchInput) searchInput.addEventListener("input", applyFilters);
+
+    /* Hidden inputs thay vì select cũ, dropdown đã auto apply */
+    applyFilters();
+
 </script>
+
 
 </body>
 </html>

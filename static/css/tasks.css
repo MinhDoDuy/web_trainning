@@ -672,4 +672,63 @@ body {
     border-color: #d39e00;
 }
 
+/* Dropdown items hover nền đen, chữ trắng */
+.filter-dropdown .dropdown-item,
+.sort-dropdown .dropdown-item {
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.25s, color 0.25s;
+    cursor: pointer;
+}
+
+/* trạng thái màu cho items */
+.filter-dropdown .dropdown-item.completed,
+.sort-dropdown .dropdown-item.completed {
+    color: #16a34a;
+}
+
+.filter-dropdown .dropdown-item.pending,
+.sort-dropdown .dropdown-item.pending {
+    color: #eab308;
+}
+
+/* Hover: nền đen, chữ trắng */
+.filter-dropdown .dropdown-item:hover,
+.sort-dropdown .dropdown-item:hover {
+    background: #000;       /* nền đen */
+    color: #fff !important; /* chữ trắng */
+    text-shadow: none;      /* bỏ chữ nổi */
+}
+
+/* Icon tròn trước trạng thái */
+.filter-dropdown .dropdown-item::before,
+.sort-dropdown .dropdown-item::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.filter-dropdown .dropdown-item.completed::before,
+.sort-dropdown .dropdown-item.completed::before {
+    background-color: #16a34a;
+}
+
+.filter-dropdown .dropdown-item.pending::before,
+.sort-dropdown .dropdown-item.pending::before {
+    background-color: #eab308;
+}
+
+/* Pretty Status (select) hover giống dropdown, chỉ đổi nền và chữ */
+.pretty-status:hover {
+    background-color: #000; /* nền đen */
+    color: #fff;            /* chữ trắng */
+}
+
+
+
 

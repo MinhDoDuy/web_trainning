@@ -222,3 +222,45 @@ body {
     color: #000; /* có thể đổi màu icon khi hover, hoặc giữ nguyên */
 }
 
+.btn-user-action {
+    background: linear-gradient(90deg, #4e54c8, #8f94fb);
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-user-action:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.btn-cancel-action {
+    background: linear-gradient(135deg, #6c757d, #495057); /* xám gradient */
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+
+    display: flex;           /* thêm */
+    align-items: center;     /* căn giữa dọc */
+    justify-content: center; /* căn giữa ngang */
+    text-align: center;      /* an toàn cho text */
+}
+
+.btn-cancel-action:hover {
+    background: linear-gradient(135deg, #495057, #6c757d);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+.btn-cancel-action:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+
