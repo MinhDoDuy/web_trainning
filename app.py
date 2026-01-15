@@ -156,18 +156,21 @@ def index_route():
         tasks = get_tasks_by_user(user_id)
         users = []
 
-    completed_count = sum(1 for t in tasks if t["status"] == "completed")
-    pending_count = sum(1 for t in tasks if t["status"] == "pending")
+    todo_count = sum(1 for t in tasks if t["status"] == "todo")
+    doing_count = sum(1 for t in tasks if t["status"] == "doing")
+    done_count = sum(1 for t in tasks if t["status"] == "done")
 
     return render_template(
         "tasks.html",
         tasks=tasks,
         username=username,
         role=role,
-        completed_count=completed_count,
-        pending_count=pending_count,
-        users=users
+        users=users,
+        todo_count=todo_count,
+        doing_count=doing_count,
+        done_count=done_count
     )
+
 
 # -----------------------------
 # Routes: Tasks
@@ -365,6 +368,7 @@ def internal_error(e):
         error_title="Internal Server Error",
         error_message="Something went wrong on the server."
     ), 500
+
 
 # -----------------------------
 # Run

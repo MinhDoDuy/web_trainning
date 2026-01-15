@@ -19,28 +19,49 @@ function clearInput(id) {
 /* =========================
    3️Status Dropdowns (Add/Edit Task)
 ========================= */
-function setStatus(hiddenInputId, el) {
-    const input = document.getElementById(hiddenInputId);
-    if (!input) return;
+function setStatus(inputId, el, isDefault = false) {
+    const input = document.getElementById(inputId);
 
-    const dropdown = el.closest('.dropdown').querySelector('button');
-    input.value = el.innerText.toLowerCase();
-    if (dropdown) dropdown.innerText = el.innerText;
+    let dot, textEl;
+    if (inputId === 'statusInputAdmin') {
+        dot = document.getElementById('statusDotAdmin');
+        textEl = document.getElementById('statusTextAdmin');
+    } else if (inputId === 'statusInputUser') {
+        dot = document.getElementById('statusDotUser');
+        textEl = document.getElementById('statusTextUser');
+    }
+
+    if (isDefault || !el) {
+        input.value = '';
+        textEl.textContent = 'Select Status';
+        dot.classList.add('d-none');
+    } else {
+        input.value = el.dataset.value;
+        textEl.textContent = el.textContent.trim();
+        dot.classList.remove('d-none');
+
+        switch (el.dataset.value) {
+            case 'todo': dot.className = 'status-dot bg-secondary'; break;
+            case 'doing': dot.className = 'status-dot bg-info'; break;
+            case 'done': dot.className = 'status-dot bg-success'; break;
+            default: dot.className = 'status-dot d-none';
+        }
+    }
 }
 
-function setEditStatus(id, value) {
-    const input = document.getElementById('editStatusInput' + id);
-    const dropdown = document.getElementById('editStatusDropdown' + id);
-    if (input) input.value = value;
-    if (dropdown) dropdown.innerText = value.charAt(0).toUpperCase() + value.slice(1);
-}
+// function setEditStatus(id, value) {
+//     const input = document.getElementById('editStatusInput' + id);
+//     const dropdown = document.getElementById('editStatusDropdown' + id);
+//     if (input) input.value = value;
+//     if (dropdown) dropdown.innerText = value.charAt(0).toUpperCase() + value.slice(1);
+// }
 
 
 /* Update color cho select */
 const select = document.querySelector('.pretty-status');
 if (select) {
     function updateColor() {
-        select.classList.remove('completed', 'pending');
+        select.classList.remove('todo', 'doing', 'done');
         select.classList.add(select.value);
     }
 
@@ -66,7 +87,6 @@ if (deleteModal) {
 }
 
 
-
 /* =========================
    5️Chart.js Task Overview
 ========================= */
@@ -80,14 +100,14 @@ if (chartModal) {
             modalChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Completed', 'Pending'],
+                    labels: ['To Do', 'Doing', 'Done'],
                     datasets: [{
-                        label: 'Tasks Status',
                         data: [
-                            Number(document.body.dataset.completed || 0),
-                            Number(document.body.dataset.pending || 0)
+                            Number(document.body.dataset.todo || 0),
+                            Number(document.body.dataset.doing || 0),
+                            Number(document.body.dataset.done || 0)
                         ],
-                        backgroundColor: ['#28a745', '#ffc107']
+                        backgroundColor: ['#ffc107', '#0d6efd', '#28a745']
                     }]
                 },
                 options: {
@@ -161,15 +181,31 @@ function sortRows() {
 
 // Status Filter Dropdown
 function setFilterStatus(value, el) {
-    document.getElementById('statusFilter').value = value;
-    document.getElementById('filterStatusDropdown').innerText = el.innerText;
+    const statusInput = document.getElementById('statusFilter');
+    const textEl = document.getElementById('filterStatusText');
+    const dotEl = document.getElementById('filterStatusDot');
 
-    // Remove selected class từ các item khác
-    document.querySelectorAll('.filter-dropdown .dropdown-item').forEach(i => i.classList.remove('selected'));
+    statusInput.value = value;
+    textEl.innerText = el.innerText.trim();
+
+    // reset dot
+    dotEl.className = 'status-dot';
+
+    if (value === 'all') {
+        dotEl.classList.add('d-none');
+    } else {
+        dotEl.classList.remove('d-none');
+        dotEl.classList.add(value);
+    }
+
+    // selected style
+    document.querySelectorAll('.filter-dropdown .dropdown-item')
+        .forEach(i => i.classList.remove('selected'));
     el.classList.add('selected');
 
     applyFilters();
 }
+
 
 function setSortOrder(value, el) {
     document.getElementById('sortOrder').value = value;
@@ -205,27 +241,24 @@ function filterUsers() {
     });
 }
 
-function setAssignedUser(id, username, el) {
-    // Thay text button dropdown
-    const dropdownBtn = document.getElementById('assignedUserDropdown');
-    dropdownBtn.textContent = username;
+function setAssignedUser(userId, username, el, isDefault = false) {
+    document.getElementById('assignedUserInput').value = userId;
+    const userText = document.getElementById('userText');
+    const userDot = document.getElementById('userDot');
 
-    // Lưu id vào input ẩn
-    const hiddenInput = document.getElementById('assignedUserInput');
-    hiddenInput.value = id;
-
-    // Reset search input
-    document.getElementById('userSearchInput').value = '';
-
-    // Close dropdown menu (tùy chọn, cần bootstrap 5 JS)
-    const dropdown = bootstrap.Dropdown.getInstance(dropdownBtn);
-    if (dropdown) dropdown.hide();
+    userText.textContent = username;
+    if (isDefault || !userId) {
+        userDot.classList.add('d-none');
+    } else {
+        userDot.classList.remove('d-none');
+        userDot.className = 'status-dot bg-primary'; // màu dot Assigned User
+    }
 }
 
 const addTaskForm = document.getElementById('addTaskForm');
 
 if (addTaskForm) {
-    addTaskForm.addEventListener('submit', function(e) {
+    addTaskForm.addEventListener('submit', function (e) {
         const titleInput = addTaskForm.querySelector('input[name="title"]');
         const descInput = addTaskForm.querySelector('input[name="description"]');
 
@@ -249,7 +282,7 @@ if (addTaskForm) {
             `;
 
             toastContainer.appendChild(toastEl);
-            const bsToast = new bootstrap.Toast(toastEl, { delay: 3000 });
+            const bsToast = new bootstrap.Toast(toastEl, {delay: 3000});
             bsToast.show();
 
             // Tự remove sau khi hết
@@ -261,3 +294,15 @@ if (addTaskForm) {
         }
     });
 }
+
+function capitalizeWords(str) {
+    return str.replace(/(^|\s)(\p{L})/gu, (_, space, char) => space + char.toUpperCase());
+}
+
+
+document.querySelectorAll('input[name="title"], input[name="description"], textarea').forEach(el => {
+    el.addEventListener('blur', function() {
+        this.value = capitalizeWords(this.value);
+    });
+});
+

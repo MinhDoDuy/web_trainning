@@ -262,5 +262,10 @@ body {
     transform: translateY(0) scale(0.97);
     box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 6px rgba(255,192,203,0.4);
+    border-color: #ffc0cb;
+    outline: none;
+}
 
 

@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tasks.css') }}">
 </head>
 <body class="bg-light"
-      data-completed="{{ completed_count }}"
-      data-pending="{{ pending_count }}">
+      data-todo="{{ todo_count }}"
+      data-doing="{{ doing_count }}"
+      data-done="{{ done_count }}">
 <div class="container py-5">
 
     <!-- Header -->
@@ -69,110 +70,146 @@
                     <div class="d-flex align-items-start gap-2 flex-wrap">
 
                         <!-- Title -->
-                        <div class="position-relative flex-grow-1">
+                        <div class="form-group position-relative" style="flex: 1 1 200px;">
                             <input type="text" name="title" class="form-control" placeholder="-- Title"
                                    id="titleInputAdmin">
                             <span class="clear-input" onclick="clearInput('titleInputAdmin')">&times;</span>
                         </div>
 
                         <!-- Description -->
-                        <div class="position-relative flex-grow-1">
+                        <div class="form-group position-relative" style="flex: 1 1 200px;">
                             <input type="text" name="description" class="form-control" placeholder="-- Description"
                                    id="descInputAdmin">
                             <span class="clear-input" onclick="clearInput('descInputAdmin')">&times;</span>
                         </div>
 
-                        <div class="dropdown status-dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
-                                    id="assignedUserDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                -- Select User --
-                            </button>
-                            <ul class="dropdown-menu p-2" aria-labelledby="assignedUserDropdown">
-                                <!-- Input search -->
-                                <li>
-                                    <input type="text" id="userSearchInput" class="form-control mb-2"
-                                           placeholder="Type to search..." onkeyup="filterUsers()">
-                                </li>
-                                <!-- User items -->
-                                {% for u in users %}
-                                {% if u.role != 'admin' %}
-                                <li>
-                                    <a class="dropdown-item user-item" href="#"
-                                       data-username="{{ u.username }}"
-                                       onclick="setAssignedUser('{{ u.id }}', '{{ u.username }}', this)">
-                                        {{ u.username }}
-                                    </a>
-                                </li>
-                                {% endif %}
-                                {% endfor %}
-                            </ul>
-                            <input type="hidden" name="assigned_user_id" id="assignedUserInput">
-                        </div>
 
-
-                        <!-- Status -->
-                        <div>
-                            <div class="dropdown status-dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                        id="statusDropdownAdmin" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Pending
+                        <!-- Assigned User -->
+                        <div class="form-group" style="flex: 0 0 180px;">
+                            <div class="dropdown status-dropdown w-100">
+                                <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center justify-content-center gap-1 w-100"
+                                        type="button" id="assignedUserDropdown" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span class="status-dot d-none" id="userDot"></span>
+                                    <span id="userText" class="flex-grow-1 text-center">Select User</span>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="statusDropdownAdmin">
-                                    <li><a class="dropdown-item completed" href="#"
-                                           onclick="setStatus('statusInputAdmin', this)">Completed</a></li>
-                                    <li><a class="dropdown-item pending" href="#"
-                                           onclick="setStatus('statusInputAdmin', this)">Pending</a></li>
+                                <ul class="dropdown-menu p-2" aria-labelledby="assignedUserDropdown">
+                                    <!-- Default / reset -->
+                                    <li>
+                                        <a class="dropdown-item" href="#"
+                                           onclick="setAssignedUser('', 'Select User', this, true)">
+                                            -- Default --
+                                        </a>
+                                    </li>
+                                    <!-- Input search -->
+                                    <li>
+                                        <input type="text" id="userSearchInput" class="form-control mb-2"
+                                               placeholder="Type to search..." onkeyup="filterUsers()">
+                                    </li>
+                                    <!-- User items -->
+                                    {% for u in users %}
+                                    {% if u.role != 'admin' %}
+                                    <li>
+                                        <a class="dropdown-item user-item" href="#"
+                                           data-username="{{ u.username }}"
+                                           onclick="setAssignedUser('{{ u.id }}', '{{ u.username }}', this)">
+                                            <span class="status-dot bg-primary"></span> {{ u.username }}
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
                                 </ul>
-                                <input type="hidden" name="status" id="statusInputAdmin" value="pending">
+                                <input type="hidden" name="assigned_user_id" id="assignedUserInput">
                             </div>
                         </div>
 
+                        <!-- Status -->
+                        <div class="form-group" style="flex: 0 0 150px;">
+                            <div class="dropdown status-dropdown w-100">
+                                <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center justify-content-center gap-1 w-100"
+                                        type="button" id="statusDropdownAdmin" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span class="status-dot d-none" id="statusDotAdmin"></span>
+                                    <span id="statusTextAdmin" class="flex-grow-1 text-center">Select Status</span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="statusDropdownAdmin">
+                                    <!-- Default / reset -->
+<!--                                    <li>-->
+<!--                                        <a class="dropdown-item" href="#"-->
+<!--                                           onclick="setStatus('statusInputAdmin', null, true)">-->
+<!--                                            &#45;&#45; Default &#45;&#45;-->
+<!--                                        </a>-->
+<!--                                    </li>-->
+                                    <li><a class="dropdown-item todo" href="#"
+                                           onclick="setStatus('statusInputAdmin', this)" data-value="todo"><span
+                                            class="status-dot bg-secondary"></span> To Do</a></li>
+                                    <li><a class="dropdown-item doing" href="#"
+                                           onclick="setStatus('statusInputAdmin', this)" data-value="doing"><span
+                                            class="status-dot bg-info"></span> Doing</a></li>
+                                    <li><a class="dropdown-item done" href="#"
+                                           onclick="setStatus('statusInputAdmin', this)" data-value="done"><span
+                                            class="status-dot bg-success"></span> Done</a></li>
+                                </ul>
+                                <input type="hidden" name="status" id="statusInputAdmin" value="">
+                            </div>
+                        </div>
+
+
                         <!-- Add Task Button -->
-                        <div>
-                            <button type="submit" class="btn btn-add-task btn-gradient">
+                        <div style="flex: 0 0 130px;">
+                            <button type="submit" class="btn btn-add-task btn-gradient w-100">
                                 <i class="bi bi-plus-circle"></i> Add Task
                             </button>
                         </div>
-
                     </div>
                     {% else %}
                     <!-- USER: giữ layout cũ theo row/col -->
 
                     <!-- Title -->
-                    <div class="col-md-4 position-relative">
-                        <input type="text" name="title" class="form-control" placeholder="-- Title" id="titleInputUser">
-                        <span class="clear-input" onclick="clearInput('titleInputUser')">&times;</span>
-                    </div>
+                    <div class="d-flex align-items-start gap-2 flex-wrap w-100">
 
-                    <!-- Description -->
-                    <div class="col-md-4 position-relative">
-                        <input type="text" name="description" class="form-control" placeholder="-- Description"
-                               id="descInputUser">
-                        <span class="clear-input" onclick="clearInput('descInputUser')">&times;</span>
-                    </div>
-
-                    <!-- Status -->
-                    <div class="col-md-2">
-                        <div class="dropdown status-dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
-                                    id="statusDropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
-                                Pending
-                            </button>
-                            <ul class="dropdown-menu w-100" aria-labelledby="statusDropdownUser">
-                                <li><a class="dropdown-item completed" href="#"
-                                       onclick="setStatus('statusInputUser', this)">Completed</a></li>
-                                <li><a class="dropdown-item pending" href="#"
-                                       onclick="setStatus('statusInputUser', this)">Pending</a></li>
-                            </ul>
-                            <input type="hidden" name="status" id="statusInputUser" value="pending">
+                        <div class="form-group position-relative" style="flex: 1 1 200px;">
+                            <input type="text" name="title" class="form-control" placeholder="-- Title"
+                                   id="titleInputUser">
+                            <span class="clear-input" onclick="clearInput('titleInputUser')">&times;</span>
                         </div>
-                    </div>
 
-                    <!-- Add Task Button -->
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-add-task w-100 btn-gradient">
-                            <i class="bi bi-plus-circle"></i> Add Task
-                        </button>
+                        <div class="form-group position-relative" style="flex: 1 1 200px;">
+                            <input type="text" name="description" class="form-control" placeholder="-- Description"
+                                   id="descInputUser">
+                            <span class="clear-input" onclick="clearInput('descInputUser')">&times;</span>
+                        </div>
+
+                        <div class="form-group" style="flex: 0 0 150px;">
+                            <div class="dropdown status-dropdown w-100">
+                                <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center justify-content-center gap-1 w-100"
+                                        type="button" id="statusDropdownUser" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span class="status-dot d-none" id="statusDotUser"></span>
+                                    <span id="statusTextUser" class="flex-grow-1 text-center">Select Status</span>
+
+                                </button>
+
+                                <ul class="dropdown-menu w-100" aria-labelledby="statusDropdownUser">
+                                    <li><a class="dropdown-item todo" href="#"
+                                           onclick="setStatus('statusInputUser', this)" data-value="todo">
+                                        <span class="status-dot bg-secondary"></span> To Do</a></li>
+                                    <li><a class="dropdown-item doing" href="#"
+                                           onclick="setStatus('statusInputUser', this)" data-value="doing">
+                                        <span class="status-dot bg-info"></span> Doing</a></li>
+                                    <li><a class="dropdown-item done" href="#"
+                                           onclick="setStatus('statusInputUser', this)" data-value="done">
+                                        <span class="status-dot bg-success"></span> Done</a></li>
+                                </ul>
+                                <input type="hidden" name="status" id="statusInputUser" value="todo">
+                            </div>
+                        </div>
+
+                        <div style="flex: 0 0 130px;">
+                            <button type="submit" class="btn btn-add-task btn-gradient w-100">
+                                <i class="bi bi-plus-circle"></i> Add Task
+                            </button>
+                        </div>
                     </div>
                     {% endif %}
 
@@ -198,15 +235,29 @@
             </div>
 
             <div class="flex-grow-1 dropdown filter-dropdown">
-                <button class="btn btn-outline-secondary w-100 dropdown-toggle" type="button"
-                        id="filterStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">All Status
+                <button class="btn btn-outline-secondary w-100 dropdown-toggle d-flex align-items-center justify-content-center gap-2"
+                        type="button"
+                        id="filterStatusDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    <span class="status-dot d-none" id="filterStatusDot"></span>
+                    <span id="filterStatusText">All Status</span>
                 </button>
+
                 <ul class="dropdown-menu w-100" aria-labelledby="filterStatusDropdown">
                     <li><a class="dropdown-item all" href="#" onclick="setFilterStatus('all', this)">All Status</a></li>
-                    <li><a class="dropdown-item completed" href="#" onclick="setFilterStatus('completed', this)">Completed</a>
-                    </li>
-                    <li><a class="dropdown-item pending" href="#" onclick="setFilterStatus('pending', this)">Pending</a>
-                    </li>
+                    <li><a class="dropdown-item todo" href="#" onclick="setFilterStatus('todo', this)">
+                        <span class="status-dot"></span>
+                        To Do
+                    </a></li>
+                    <li><a class="dropdown-item doing" href="#" onclick="setFilterStatus('doing', this)">
+                        <span class="status-dot"></span>
+                        Doing
+                    </a></li>
+                    <li><a class="dropdown-item done" href="#" onclick="setFilterStatus('done', this)">
+                        <span class="status-dot"></span>
+                        Done
+                    </a></li>
                 </ul>
                 <input type="hidden" id="statusFilter" value="all">
             </div>
@@ -257,6 +308,7 @@
                     <td class="task-title text-truncate" style="max-width: 150px;">
                         {% if task.assigned_by_admin %}
                         <span class="admin-dot me-1"
+                              data-bs-toggle="tooltip"
                               title="Task assigned by Admin"></span>
                         {% endif %}
                         {{ task.title }}
@@ -264,10 +316,17 @@
                     <td class="task-desc text-truncate" style="max-width: 250px;">{{ task.description }}</td>
 
                     <td>
-                        {% if task.status == 'completed' %}
-                        <span class="badge bg-success">Completed</span>
-                        {% else %}
-                        <span class="badge bg-warning text-dark">Pending</span>
+                        <!--                        {% if task.assigned_by_admin %}-->
+                        <!--                        <span class="admin-dot me-1"-->
+                        <!--                              data-bs-toggle="tooltip"-->
+                        <!--                              title="Task assigned by Admin"></span>-->
+                        <!--                        {% endif %}-->
+                        {% if task.status == 'todo' %}
+                        <span class="badge bg-secondary">To Do</span>
+                        {% elif task.status == 'doing' %}
+                        <span class="badge bg-info text-dark">Doing</span>
+                        {% elif task.status == 'done' %}
+                        <span class="badge bg-success">Done</span>
                         {% endif %}
                     </td>
 
@@ -308,7 +367,12 @@
                             </div>
                             <div class="modal-body">
                                 <p class="text-break"><strong>Description:</strong> {{ task.description }}</p>
-                                <p><strong>Status:</strong> {{ task.status | capitalize }}</p>
+                                <p><strong>Status:</strong>
+                                    {% if task.status == 'todo' %}To Do
+                                    {% elif task.status == 'doing' %}Doing
+                                    {% elif task.status == 'done' %}Done
+                                    {% endif %}
+                                </p>
                                 {% if role == 'admin' %}
                                 <p><strong>User:</strong> {{ task.username }}</p>
                                 {% endif %}
@@ -361,12 +425,12 @@
                                     <div class="mb-3">
                                         <label class="form-label">Status</label>
                                         <select name="status" class="form-select">
-                                            <option value="completed" {% if task.status=='completed' %}selected{% endif
-                                                    %}>
-                                                Completed
+                                            <option value="todo" {% if task.status=='todo' %}selected{% endif %}>To Do
                                             </option>
-                                            <option value="pending" {% if task.status=='pending' %}selected{% endif %}>
-                                                Pending
+                                            <option value="doing" {% if task.status=='doing' %}selected{% endif %}>
+                                                Doing
+                                            </option>
+                                            <option value="done" {% if task.status=='done' %}selected{% endif %}>Done
                                             </option>
                                         </select>
                                     </div>
@@ -426,7 +490,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="{{ url_for('static', filename='js/tasks.js') }}"></script>
 </body>
 </html>

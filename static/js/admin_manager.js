@@ -1,10 +1,38 @@
-// Dynamic delete link
+// ------------------------------
+// Dynamic delete modal
+// ------------------------------
+// Dynamic delete modal
 var deleteModal = document.getElementById('deleteModal');
-deleteModal.addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget;
+
+deleteModal.addEventListener('show.bs.modal', function(event) {
+    var button = event.relatedTarget; // nút delete click
+    var userName = button.getAttribute('data-user-name');
     var url = button.getAttribute('data-user-url');
+    var tasks = JSON.parse(button.getAttribute('data-user-tasks'));
+
+    // Hiển thị tên user
+    document.getElementById('deleteUserMessage').innerHTML =
+        `Are you sure you want to delete <strong>${userName}</strong>?`;
+
+    // Set href nút Delete
     document.getElementById('confirmDeleteBtn').setAttribute('href', url);
+
+    // Render danh sách task nếu có
+    var ul = document.getElementById('userTaskList');
+    ul.innerHTML = ""; // clear
+    if (tasks.length > 0) {
+        tasks.forEach(function(task){
+            var li = document.createElement('li');
+            li.classList.add('list-group-item');
+            li.innerHTML = `<i class="bi bi-check-circle-fill text-success me-1"></i> ${task.title} (${task.status})`;
+            ul.appendChild(li);
+        });
+        ul.classList.remove('d-none');
+    } else {
+        ul.classList.add('d-none');
+    }
 });
+
 
 // Toast
 document.querySelectorAll('.toast').forEach(toastEl => {

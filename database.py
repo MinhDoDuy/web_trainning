@@ -1,5 +1,4 @@
 import psycopg2
-from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
 
 DB_CONFIG = {
@@ -9,6 +8,8 @@ DB_CONFIG = {
     "host": "localhost",
     "port": "5432"
 }
+
+VALID_STATUSES = ['todo', 'doing', 'done']
 
 # -----------------------------
 # DB Connection
@@ -22,20 +23,28 @@ def get_db_connection():
 def get_user_by_username(username):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute("SELECT id, username, password, role FROM users WHERE username=%s", (username,))
+    cur.execute(
+        "SELECT id, username, password, role FROM users WHERE username=%s",
+        (username,)
+    )
     user = cur.fetchone()
     cur.close()
     conn.close()
     return user
 
+
 def get_user_by_id(user_id):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute("SELECT id, username, password, role FROM users WHERE id=%s", (user_id,))
+    cur.execute(
+        "SELECT id, username, password, role FROM users WHERE id=%s",
+        (user_id,)
+    )
     user = cur.fetchone()
     cur.close()
     conn.close()
     return user
+
 
 def get_all_users():
     conn = get_db_connection()
@@ -50,6 +59,7 @@ def get_all_users():
     conn.close()
     return users
 
+
 def create_user(username, password, role="user"):
     conn = get_db_connection()
     cur = conn.cursor()
@@ -62,6 +72,7 @@ def create_user(username, password, role="user"):
     finally:
         cur.close()
         conn.close()
+
 
 def update_user(user_id, username=None, password=None, role=None):
     conn = get_db_connection()
@@ -77,6 +88,7 @@ def update_user(user_id, username=None, password=None, role=None):
     finally:
         cur.close()
         conn.close()
+
 
 def delete_user(user_id):
     conn = get_db_connection()
@@ -95,7 +107,12 @@ def get_all_tasks_admin():
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute("""
-        SELECT t.id, t.title, t.description, t.status, t.assigned_by_admin, u.username
+        SELECT t.id,
+               t.title,
+               t.description,
+               t.status,
+               t.assigned_by_admin,
+               u.username
         FROM tasks t
         JOIN users u ON t.user_id = u.id
         ORDER BY t.id
@@ -105,11 +122,17 @@ def get_all_tasks_admin():
     conn.close()
     return tasks
 
+
 def get_tasks_by_user(user_id):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute("""
-        SELECT id, title, description, status, user_id, assigned_by_admin
+        SELECT id,
+               title,
+               description,
+               status,
+               user_id,
+               assigned_by_admin
         FROM tasks
         WHERE user_id=%s
         ORDER BY id
@@ -119,27 +142,42 @@ def get_tasks_by_user(user_id):
     conn.close()
     return tasks
 
+
 def get_task(task_id):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute("SELECT id, title, description, status, user_id FROM tasks WHERE id=%s", (task_id,))
+    cur.execute("""
+        SELECT id,
+               title,
+               description,
+               status,
+               user_id,
+               assigned_by_admin
+        FROM tasks
+        WHERE id=%s
+    """, (task_id,))
     task = cur.fetchone()
     cur.close()
     conn.close()
     return task
 
-def create_task(title, description, status, user_id):
+
+def create_task(title, description, status, user_id, assigned_by_admin=False):
+    if status not in VALID_STATUSES:
+        status = 'todo'
+
     conn = get_db_connection()
     cur = conn.cursor()
     try:
-        cur.execute(
-            "INSERT INTO tasks (title, description, status, user_id) VALUES (%s, %s, %s, %s)",
-            (title, description, status, user_id)
-        )
+        cur.execute("""
+            INSERT INTO tasks (title, description, status, user_id, assigned_by_admin)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (title, description, status, user_id, assigned_by_admin))
         conn.commit()
     finally:
         cur.close()
         conn.close()
+
 
 def update_task(task_id, title=None, description=None, status=None):
     conn = get_db_connection()
@@ -149,12 +187,13 @@ def update_task(task_id, title=None, description=None, status=None):
             cur.execute("UPDATE tasks SET title=%s WHERE id=%s", (title, task_id))
         if description:
             cur.execute("UPDATE tasks SET description=%s WHERE id=%s", (description, task_id))
-        if status:
+        if status and status in VALID_STATUSES:
             cur.execute("UPDATE tasks SET status=%s WHERE id=%s", (status, task_id))
         conn.commit()
     finally:
         cur.close()
         conn.close()
+
 
 def delete_task(task_id):
     conn = get_db_connection()
@@ -165,17 +204,3 @@ def delete_task(task_id):
     finally:
         cur.close()
         conn.close()
-
-def create_task(title, description, status, user_id, assigned_by_admin=False):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    try:
-        cur.execute(
-            "INSERT INTO tasks (title, description, status, user_id, assigned_by_admin) VALUES (%s, %s, %s, %s, %s)",
-            (title, description, status, user_id, assigned_by_admin)
-        )
-        conn.commit()
-    finally:
-        cur.close()
-        conn.close()
-
