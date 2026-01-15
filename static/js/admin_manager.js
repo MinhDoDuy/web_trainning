@@ -80,3 +80,4 @@ deleteModal.addEventListener('show.bs.modal', function(event) {
         ul.classList.add('d-none');
     }
 });
+

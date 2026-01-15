@@ -243,7 +243,7 @@ def delete_task_route(task_id):
 @app.route('/admin/users', methods=['GET', 'POST'])
 @login_required
 @role_required("admin")
-def admin_users_route():
+def admin_manager_route():
     edit_user = None
     username_value = ""
     role_value = "user"
@@ -266,36 +266,36 @@ def admin_users_route():
 
         if not username:
             flash("Username cannot be empty!", "warning")
-            return redirect(url_for("admin_users_route"))
+            return redirect(url_for("admin_manager_route"))
 
         # Add new user
         if not user_id:
             if not password:
                 flash("Password cannot be empty when creating a user!", "warning")
-                return redirect(url_for("admin_users_route"))
+                return redirect(url_for("admin_manager_route"))
             try:
                 hashed_password = generate_password_hash(password)
                 create_user(username, hashed_password, role)
                 flash("User created successfully!", "success")
-                return redirect(url_for("admin_users_route"))
+                return redirect(url_for("admin_manager_route"))
             except IntegrityError:
                 flash(f"Username '{username}' already exists!", "warning")
-                return redirect(url_for("admin_users_route"))
+                return redirect(url_for("admin_manager_route"))
 
         # Update existing user
         user_db = get_user_by_id(user_id)
         if not user_db:
             flash("User not found!", "danger")
-            return redirect(url_for("admin_users_route"))
+            return redirect(url_for("admin_manager_route"))
 
         if user_db["role"] == "admin":
             flash("You cannot edit Admin!", "warning")
-            return redirect(url_for("admin_users_route"))
+            return redirect(url_for("admin_manager_route"))
 
         hashed_password = generate_password_hash(password) if password else None
         update_user(user_id, username=username, password=hashed_password, role=role)
         flash("User updated successfully!", "success")
-        return redirect(url_for("admin_users_route"))
+        return redirect(url_for("admin_manager_route"))
 
     # GET
     users = get_all_users()
@@ -305,7 +305,7 @@ def admin_users_route():
     confirm_user_tasks = get_tasks_by_user(confirm_user["id"]) if confirm_user else []
 
     return render_template(
-        "admin_users.html",
+        "admin_manager.html",
         users=users,
         user_tasks_map=user_tasks_map,
         edit_user=edit_user,
@@ -323,7 +323,7 @@ def admin_delete_user_route(user_id):
     user = get_user_by_id(user_id)
     if not user:
         flash("User does not exist!", "danger")
-        return redirect(url_for("admin_users_route"))
+        return redirect(url_for("admin_manager_route"))
 
     # Lấy tất cả task của user
     tasks = get_tasks_by_user(user_id)
@@ -333,7 +333,7 @@ def admin_delete_user_route(user_id):
     # Xóa user
     delete_user(user_id)
     flash(f"User {user['username']} and all their tasks were deleted successfully!", "success")
-    return redirect(url_for("admin_users_route"))
+    return redirect(url_for("admin_manager_route"))
 
 
 # -----------------------------

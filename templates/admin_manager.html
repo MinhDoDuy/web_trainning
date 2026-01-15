@@ -5,7 +5,7 @@
     <title>Manage Users</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_users.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_manager.css') }}">
 </head>
 <body>
 <div class="container py-5">
@@ -40,9 +40,9 @@
 
     <!-- Add / Edit User Form -->
     <div class="card p-3 mb-4">
-        <form action="{{ url_for('admin_users_route') }}" method="post" class="row g-3">
+        <form action="{{ url_for('admin_manager_route') }}" method="post" class="row g-3">
             {% if edit_user %}
-            <input type="hidden" name="user_id" value="{{ edit_user.id }}">
+            <input type="hidden" name="user_id" value="{{ edit_user['id'] }}">
 
             {% endif %}
             <div class="col-md-4 position-relative">
@@ -73,7 +73,7 @@
                     {{ 'Update' if edit_user else 'Add User' }}
                 </button>
                 {% if edit_user %}
-                <a href="{{ url_for('admin_users_route') }}" class="btn btn-cancel-action flex-fill">Cancel</a>
+                <a href="{{ url_for('admin_manager_route') }}" class="btn btn-cancel-action flex-fill">Cancel</a>
                 {% endif %}
             </div>
 
@@ -102,10 +102,10 @@
                 </thead>
                 <tbody id="userTableBody">
                 <!-- Admin -->
-                {% for user in users if user.role == 'admin' %}
+                {% for user in users if user['role'] == 'admin' %}
                 <tr class="user-row" data-role="admin">
                     <td>{{ loop.index }}</td>
-                    <td>{{ user.username }}</td>
+                    <td>{{ user['username'] }}</td>
                     <td><span class="badge bg-danger">Admin</span></td>
                     <td></td>
                 </tr>
@@ -125,13 +125,13 @@
                     <td>{{ user.username }}</td>
                     <td><span class="badge bg-secondary">User</span></td>
                     <td>
-                        <a href="{{ url_for('admin_users_route') }}?edit={{ user.id }}" class="action-btn edit me-2">
+                        <a href="{{ url_for('admin_manager_route') }}?edit={{ user['id'] }}" class="action-btn edit me-2">
                             <i class="bi bi-pencil-square"></i>
                         </a>
                         <a href="#" class="action-btn delete" data-bs-toggle="modal" data-bs-target="#deleteModal"
                            data-user-name="{{ user.username }}"
                            data-user-url="{{ url_for('admin_delete_user_route', user_id=user.id) }}"
-                           data-user-tasks='{{ user_tasks_map[user.id]|tojson }}'>
+                           data-user-tasks='{{ user_tasks_map[user["id"]]|tojson }}'>
                             <i class="bi bi-trash-fill"></i>
                         </a>
 
@@ -166,7 +166,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ url_for('static', filename='js/admin_users.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin_manager.js') }}"></script>
 <!--<script>-->
 <!--    // Dynamic delete link-->
 <!--    var deleteModal = document.getElementById('deleteModal');-->

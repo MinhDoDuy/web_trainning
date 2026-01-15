@@ -776,7 +776,14 @@ body {
     box-shadow: 0 0 6px rgba(75,108,183,0.35);
 }
 
-
+.admin-dot {
+    width: 6px;
+    height: 6px;
+    background: #dc3545;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+}
 
 
 
