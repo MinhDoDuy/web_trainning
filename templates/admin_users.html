@@ -51,7 +51,8 @@
                 <span class="clear-input" onclick="clearInput('usernameInput')">&times;</span>
             </div>
             <div class="col-md-3 position-relative">
-                <input type="password" name="password" class="form-control" placeholder="-- Password" id="passwordInput">
+                <input type="password" name="password" class="form-control" placeholder="-- Password"
+                       id="passwordInput">
                 <span class="clear-input" onclick="clearInput('passwordInput')">&times;</span>
             </div>
             <div class="col-md-3">
@@ -111,7 +112,11 @@
                 {% endfor %}
 
                 <!-- Divider -->
-                <tr><td colspan="4"><hr></td></tr>
+                <tr>
+                    <td colspan="4">
+                        <hr>
+                    </td>
+                </tr>
 
                 <!-- Users -->
                 {% for user in users if user.role != 'admin' %}
@@ -124,9 +129,13 @@
                             <i class="bi bi-pencil-square"></i>
                         </a>
                         <a href="#" class="action-btn delete" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                           data-user-url="{{ url_for('admin_delete_user_route', user_id=user.id) }}">
+                           data-user-name="{{ user.username }}"
+                           data-user-url="{{ url_for('admin_delete_user_route', user_id=user.id) }}"
+                           data-user-tasks='{{ user_tasks_map[user.id]|tojson }}'>
                             <i class="bi bi-trash-fill"></i>
                         </a>
+
+
                     </td>
                 </tr>
                 {% endfor %}
@@ -145,7 +154,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                Are you sure you want to delete this user?
+                <p id="deleteUserMessage">Are you sure you want to delete this user?</p>
+                <ul id="userTaskList" class="list-group d-none"></ul> <!-- danh sách task nếu có -->
             </div>
             <div class="modal-footer justify-content-center">
                 <a href="#" class="btn-delete-modal" id="confirmDeleteBtn">Delete</a>
@@ -156,55 +166,56 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Dynamic delete link
-    var deleteModal = document.getElementById('deleteModal');
-    deleteModal.addEventListener('show.bs.modal', function(event) {
-        var button = event.relatedTarget;
-        var url = button.getAttribute('data-user-url');
-        document.getElementById('confirmDeleteBtn').setAttribute('href', url);
-    });
+<script src="{{ url_for('static', filename='js/admin_users.js') }}"></script>
+<!--<script>-->
+<!--    // Dynamic delete link-->
+<!--    var deleteModal = document.getElementById('deleteModal');-->
+<!--    deleteModal.addEventListener('show.bs.modal', function(event) {-->
+<!--        var button = event.relatedTarget;-->
+<!--        var url = button.getAttribute('data-user-url');-->
+<!--        document.getElementById('confirmDeleteBtn').setAttribute('href', url);-->
+<!--    });-->
 
-    // Toast
-    document.querySelectorAll('.toast').forEach(toastEl => {
-        new bootstrap.Toast(toastEl, {delay: 3000}).show();
-    });
+<!--    // Toast-->
+<!--    document.querySelectorAll('.toast').forEach(toastEl => {-->
+<!--        new bootstrap.Toast(toastEl, {delay: 3000}).show();-->
+<!--    });-->
 
-    // Clear input
-    function clearInput(id) {
-        document.getElementById(id).value = '';
-        document.getElementById(id).focus();
-        if(id === 'userSearch') applyUserFilter();
-    }
+<!--    // Clear input-->
+<!--    function clearInput(id) {-->
+<!--        document.getElementById(id).value = '';-->
+<!--        document.getElementById(id).focus();-->
+<!--        if(id === 'userSearch') applyUserFilter();-->
+<!--    }-->
 
-    // Set Role
-    function setRole(value) {
-        document.getElementById('roleInput').value = value;
-        document.getElementById('roleDropdown').innerText = value.charAt(0).toUpperCase() + value.slice(1);
-    }
+<!--    // Set Role-->
+<!--    function setRole(value) {-->
+<!--        document.getElementById('roleInput').value = value;-->
+<!--        document.getElementById('roleDropdown').innerText = value.charAt(0).toUpperCase() + value.slice(1);-->
+<!--    }-->
 
-    // ===============================
-    // Live search for users (admin always visible)
-    // ===============================
-    const userSearchInput = document.getElementById("userSearch");
+<!--    // ===============================-->
+<!--    // Live search for users (admin always visible)-->
+<!--    // ===============================-->
+<!--    const userSearchInput = document.getElementById("userSearch");-->
 
-    function applyUserFilter() {
-        const keyword = userSearchInput.value.toLowerCase().trim();
-        const allRows = Array.from(document.querySelectorAll("#userTableBody tr.user-row"));
+<!--    function applyUserFilter() {-->
+<!--        const keyword = userSearchInput.value.toLowerCase().trim();-->
+<!--        const allRows = Array.from(document.querySelectorAll("#userTableBody tr.user-row"));-->
 
-        allRows.forEach(row => {
-            const role = row.dataset.role;
-            const username = row.children[1].innerText.toLowerCase();
+<!--        allRows.forEach(row => {-->
+<!--            const role = row.dataset.role;-->
+<!--            const username = row.children[1].innerText.toLowerCase();-->
 
-            if(role === "admin") {
-                row.style.display = ""; // Admin luôn hiển thị
-            } else {
-                row.style.display = username.includes(keyword) ? "" : "none";
-            }
-        });
-    }
+<!--            if(role === "admin") {-->
+<!--                row.style.display = ""; // Admin luôn hiển thị-->
+<!--            } else {-->
+<!--                row.style.display = username.includes(keyword) ? "" : "none";-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
 
-    if(userSearchInput) userSearchInput.addEventListener("input", applyUserFilter);
-</script>
+<!--    if(userSearchInput) userSearchInput.addEventListener("input", applyUserFilter);-->
+<!--</script>-->
 </body>
 </html>

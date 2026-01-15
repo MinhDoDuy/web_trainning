@@ -95,7 +95,7 @@ def get_all_tasks_admin():
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute("""
-        SELECT t.id, t.title, t.description, t.status, u.username
+        SELECT t.id, t.title, t.description, t.status, t.assigned_by_admin, u.username
         FROM tasks t
         JOIN users u ON t.user_id = u.id
         ORDER BY t.id
@@ -109,7 +109,7 @@ def get_tasks_by_user(user_id):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute("""
-        SELECT id, title, description, status
+        SELECT id, title, description, status, user_id, assigned_by_admin
         FROM tasks
         WHERE user_id=%s
         ORDER BY id
@@ -161,6 +161,19 @@ def delete_task(task_id):
     cur = conn.cursor()
     try:
         cur.execute("DELETE FROM tasks WHERE id=%s", (task_id,))
+        conn.commit()
+    finally:
+        cur.close()
+        conn.close()
+
+def create_task(title, description, status, user_id, assigned_by_admin=False):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO tasks (title, description, status, user_id, assigned_by_admin) VALUES (%s, %s, %s, %s, %s)",
+            (title, description, status, user_id, assigned_by_admin)
+        )
         conn.commit()
     finally:
         cur.close()

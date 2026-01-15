@@ -7,8 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tasks.css') }}">
 </head>
-<body class="bg-light">
-
+<body class="bg-light"
+      data-completed="{{ completed_count }}"
+      data-pending="{{ pending_count }}">
 <div class="container py-5">
 
     <!-- Header -->
@@ -58,38 +59,123 @@
             {% endwith %}
         </div>
 
-        <!-- Add Task Form -->
         <div class="card mb-5 shadow-sm" style="margin-top: -20px;">
             <div class="card-header">Add New Task</div>
             <div class="card-body">
-                <form action="{{ url_for('add_task_route') }}" method="post" class="row g-3">
-                    <div class="col-md-4 position-relative">
-                        <input type="text" name="title" class="form-control" placeholder="-- Title" id="titleInput">
-                        <span class="clear-input" onclick="clearInput('titleInput')">&times;</span>
+                <form id="addTaskForm" action="{{ url_for('add_task_route') }}" method="post" class="row g-3">
+
+                    {% if role == 'admin' %}
+                    <!-- ADMIN: tất cả input cùng hàng -->
+                    <div class="d-flex align-items-start gap-2 flex-wrap">
+
+                        <!-- Title -->
+                        <div class="position-relative flex-grow-1">
+                            <input type="text" name="title" class="form-control" placeholder="-- Title"
+                                   id="titleInputAdmin">
+                            <span class="clear-input" onclick="clearInput('titleInputAdmin')">&times;</span>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="position-relative flex-grow-1">
+                            <input type="text" name="description" class="form-control" placeholder="-- Description"
+                                   id="descInputAdmin">
+                            <span class="clear-input" onclick="clearInput('descInputAdmin')">&times;</span>
+                        </div>
+
+                        <div class="dropdown status-dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                    id="assignedUserDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                -- Select User --
+                            </button>
+                            <ul class="dropdown-menu p-2" aria-labelledby="assignedUserDropdown">
+                                <!-- Input search -->
+                                <li>
+                                    <input type="text" id="userSearchInput" class="form-control mb-2"
+                                           placeholder="Type to search..." onkeyup="filterUsers()">
+                                </li>
+                                <!-- User items -->
+                                {% for u in users %}
+                                {% if u.role != 'admin' %}
+                                <li>
+                                    <a class="dropdown-item user-item" href="#"
+                                       data-username="{{ u.username }}"
+                                       onclick="setAssignedUser('{{ u.id }}', '{{ u.username }}', this)">
+                                        {{ u.username }}
+                                    </a>
+                                </li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <input type="hidden" name="assigned_user_id" id="assignedUserInput">
+                        </div>
+
+
+                        <!-- Status -->
+                        <div>
+                            <div class="dropdown status-dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                        id="statusDropdownAdmin" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Pending
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="statusDropdownAdmin">
+                                    <li><a class="dropdown-item completed" href="#"
+                                           onclick="setStatus('statusInputAdmin', this)">Completed</a></li>
+                                    <li><a class="dropdown-item pending" href="#"
+                                           onclick="setStatus('statusInputAdmin', this)">Pending</a></li>
+                                </ul>
+                                <input type="hidden" name="status" id="statusInputAdmin" value="pending">
+                            </div>
+                        </div>
+
+                        <!-- Add Task Button -->
+                        <div>
+                            <button type="submit" class="btn btn-add-task btn-gradient">
+                                <i class="bi bi-plus-circle"></i> Add Task
+                            </button>
+                        </div>
+
                     </div>
+                    {% else %}
+                    <!-- USER: giữ layout cũ theo row/col -->
+
+                    <!-- Title -->
+                    <div class="col-md-4 position-relative">
+                        <input type="text" name="title" class="form-control" placeholder="-- Title" id="titleInputUser">
+                        <span class="clear-input" onclick="clearInput('titleInputUser')">&times;</span>
+                    </div>
+
+                    <!-- Description -->
                     <div class="col-md-4 position-relative">
                         <input type="text" name="description" class="form-control" placeholder="-- Description"
-                               id="descInput">
-                        <span class="clear-input" onclick="clearInput('descInput')">&times;</span>
+                               id="descInputUser">
+                        <span class="clear-input" onclick="clearInput('descInputUser')">&times;</span>
                     </div>
+
+                    <!-- Status -->
                     <div class="col-md-2">
                         <div class="dropdown status-dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="statusDropdown"
-                                    data-bs-toggle="dropdown" aria-expanded="false">Pending
+                            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                    id="statusDropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                                Pending
                             </button>
-                            <ul class="dropdown-menu w-100" aria-labelledby="statusDropdown">
-                                <li><a class="dropdown-item completed" href="#" onclick="setStatus(this)">Completed</a>
-                                </li>
-                                <li><a class="dropdown-item pending" href="#" onclick="setStatus(this)">Pending</a></li>
+                            <ul class="dropdown-menu w-100" aria-labelledby="statusDropdownUser">
+                                <li><a class="dropdown-item completed" href="#"
+                                       onclick="setStatus('statusInputUser', this)">Completed</a></li>
+                                <li><a class="dropdown-item pending" href="#"
+                                       onclick="setStatus('statusInputUser', this)">Pending</a></li>
                             </ul>
-                            <input type="hidden" name="status" id="statusInput" value="pending">
+                            <input type="hidden" name="status" id="statusInputUser" value="pending">
                         </div>
                     </div>
+
+                    <!-- Add Task Button -->
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-add-task w-100 btn-gradient">
                             <i class="bi bi-plus-circle"></i> Add Task
                         </button>
                     </div>
+                    {% endif %}
+
                 </form>
             </div>
         </div>
@@ -104,42 +190,41 @@
             </div>
         </div>
 
+        <!-- Search / Filter / Sort -->
         <div class="d-flex gap-2 mb-3">
-            <!-- Search input -->
             <div class="position-relative flex-grow-1">
                 <input id="taskSearch" class="form-control" placeholder="-- Search tasks...">
                 <span class="clear-input" onclick="clearInput('taskSearch')">&times;</span>
             </div>
 
-            <!-- Status Filter as dropdown -->
-            <!-- Status Filter -->
             <div class="flex-grow-1 dropdown filter-dropdown">
                 <button class="btn btn-outline-secondary w-100 dropdown-toggle" type="button"
                         id="filterStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">All Status
                 </button>
                 <ul class="dropdown-menu w-100" aria-labelledby="filterStatusDropdown">
                     <li><a class="dropdown-item all" href="#" onclick="setFilterStatus('all', this)">All Status</a></li>
-                    <li><a class="dropdown-item completed" href="#" onclick="setFilterStatus('completed', this)">Completed</a></li>
-                    <li><a class="dropdown-item pending" href="#" onclick="setFilterStatus('pending', this)">Pending</a></li>
+                    <li><a class="dropdown-item completed" href="#" onclick="setFilterStatus('completed', this)">Completed</a>
+                    </li>
+                    <li><a class="dropdown-item pending" href="#" onclick="setFilterStatus('pending', this)">Pending</a>
+                    </li>
                 </ul>
                 <input type="hidden" id="statusFilter" value="all">
             </div>
 
-            <!-- Sort Order -->
             <div class="flex-grow-1 dropdown sort-dropdown">
                 <button class="btn btn-outline-secondary w-100 dropdown-toggle" type="button"
                         id="sortOrderDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     Oldest First
                 </button>
                 <ul class="dropdown-menu w-100" aria-labelledby="sortOrderDropdown">
-                    <li><a class="dropdown-item oldest" href="#" onclick="setSortOrder('oldest', this)">Oldest First</a></li>
-                    <li><a class="dropdown-item newest" href="#" onclick="setSortOrder('newest', this)">Newest First</a></li>
+                    <li><a class="dropdown-item oldest" href="#" onclick="setSortOrder('oldest', this)">Oldest First</a>
+                    </li>
+                    <li><a class="dropdown-item newest" href="#" onclick="setSortOrder('newest', this)">Newest First</a>
+                    </li>
                 </ul>
                 <input type="hidden" id="sortOrder" value="oldest">
             </div>
         </div>
-
-
 
         <!-- Tasks Table -->
         <div class="d-flex justify-content-center my-3" id="pagination"></div>
@@ -160,9 +245,9 @@
                 <tbody>
                 {% for task in tasks %}
                 <tr
-                    class="task-row"
-                    data-status="{{ task.status }}"
-                    data-created="{{ task.created_at.timestamp() if task.created_at else task.id }}">
+                        class="task-row"
+                        data-status="{{ task.status }}"
+                        data-created="{{ task.created_at.timestamp() if task.created_at else task.id }}">
                     <td>{{ loop.index }}</td>
                     <td class="task-title text-truncate" style="max-width: 150px;">{{ task.title }}</td>
                     <td class="task-desc text-truncate" style="max-width: 250px;">{{ task.description }}</td>
@@ -174,6 +259,7 @@
                         <span class="badge bg-warning text-dark">Pending</span>
                         {% endif %}
                     </td>
+
                     {% if role == 'admin' %}
                     <td>{{ task.username }}</td>
                     {% endif %}
@@ -181,17 +267,19 @@
                     <td class="text-center">
                         <div class="d-flex justify-content-center gap-2">
                             <button class="btn btn-view btn-sm-smooth" data-bs-toggle="modal"
-                                data-bs-target="#viewModal{{ task.id }}">
+                                    data-bs-target="#viewModal{{ task.id }}">
                                 <i class="bi bi-eye"></i> View
                             </button>
                             <button class="btn btn-sm btn-outline-dark btn-sm-smooth" data-bs-toggle="modal"
                                     data-bs-target="#editModal{{ task.id }}">
                                 <i class="bi bi-pencil"></i> Edit
                             </button>
-                            {% if role == 'admin' %}
+
+                            {% if role == 'admin' or not task.assigned_by_admin %}
                             <a class="btn btn-sm btn-danger btn-sm-smooth" href="#" data-bs-toggle="modal"
                                data-bs-target="#deleteModal"
-                               data-task-url="{{ url_for('delete_task_route', task_id=task.id) }}">
+                               data-task-url="{{ url_for('delete_task_route', task_id=task.id) }}"
+                               data-task-title="{{ task.title }}">
                                 <i class="bi bi-trash"></i> Delete
                             </a>
                             {% endif %}
@@ -204,7 +292,7 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content rounded-4 shadow-lg border-0">
                             <div class="modal-header">
-                                <h5 class="modal-title text-break" >{{ task.title }}</h5>
+                                <h5 class="modal-title text-break">Title: {{ task.title }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
@@ -233,17 +321,21 @@
                                 <form action="{{ url_for('edit_task_route', task_id=task.id) }}" method="post">
                                     <div class="mb-3">
                                         <label class="form-label">Title</label>
-                                        <textarea name="title" class="form-control status-select" rows="4">{{ task.title }}</textarea>
+                                        <textarea name="title" class="form-control status-select" rows="2">{{ task.title }}</textarea>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Description</label>
-                                        <textarea name="description" class="form-control status-select" rows="4">{{ task.description }}</textarea>
+                                        <textarea name="description" class="form-control status-select" rows="3">{{ task.description }}</textarea>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Status</label>
-                                        <select name="status" class="form-select status-select pretty-status">
-                                            <option value="completed" {% if task.status=='completed' %}selected{% endif %}>Completed</option>
-                                            <option value="pending" {% if task.status=='pending' %}selected{% endif %}>Pending</option>
+                                        <select name="status" class="form-select status-select ">
+                                            <option value="completed" {% if task.status=='completed' %}selected{% endif
+                                                    %}>Completed
+                                            </option>
+                                            <option value="pending" {% if task.status=='pending' %}selected{% endif %}>
+                                                Pending
+                                            </option>
                                         </select>
                                     </div>
                                     <button type="submit" class="btn btn-gradient">
@@ -269,7 +361,7 @@
                     <h5 class="modal-title">Confirm Delete</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body text-center">
+                <div class="modal-body text-center" id="deleteModalBody">
                     Are you sure you want to delete this task?
                 </div>
                 <div class="modal-footer justify-content-center">
@@ -298,191 +390,11 @@
         </div>
     </div>
 
-
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    /* =========================
-       1️Toasts
-    ========================= */
-    document.querySelectorAll('.toast').forEach(toastEl => {
-        new bootstrap.Toast(toastEl, { delay: 3000 }).show();
-    });
-
-    /* =========================
-       2️Clear Input Function
-    ========================= */
-    function clearInput(id) {
-        const input = document.getElementById(id);
-        input.value = '';
-        input.focus();
-        applyFilters(); // hiển thị lại tất cả tasks
-    }
-
-    /* =========================
-       3️Status Dropdowns (Add/Edit Task)
-    ========================= */
-    function setStatus(el) {
-        document.getElementById('statusInput').value = el.innerText.toLowerCase();
-        document.getElementById('statusDropdown').innerText = el.innerText;
-    }
-
-    function setEditStatus(id, value) {
-        const input = document.getElementById('editStatusInput' + id);
-        const dropdown = document.getElementById('editStatusDropdown' + id);
-        if(input) input.value = value;
-        if(dropdown) dropdown.innerText = value.charAt(0).toUpperCase() + value.slice(1);
-    }
-
-    /* Update color cho select */
-    const select = document.querySelector('.pretty-status');
-    if (select) {
-        function updateColor() {
-            select.classList.remove('completed','pending');
-            select.classList.add(select.value);
-        }
-        updateColor();
-        select.addEventListener('change', updateColor);
-    }
-
-    /* =========================
-       4️Delete Modal Dynamic Link
-    ========================= */
-    const deleteModal = document.getElementById('deleteModal');
-    if (deleteModal) {
-        deleteModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const url = button.getAttribute('data-task-url');
-            const confirmBtn = document.getElementById('confirmDeleteBtn');
-            if(confirmBtn) confirmBtn.setAttribute('href', url);
-        });
-    }
-
-    /* =========================
-       5️Chart.js Task Overview
-    ========================= */
-    const chartModal = document.getElementById('chartModal');
-    let modalChartInstance = null;
-
-    if(chartModal) {
-        chartModal.addEventListener('shown.bs.modal', function () {
-            if (!modalChartInstance) {
-                const ctx = document.getElementById('taskChart').getContext('2d');
-                modalChartInstance = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Completed', 'Pending'],
-                        datasets: [{
-                            label: 'Tasks Status',
-                            data: [{{ completed_count }}, {{ pending_count }}],
-                            backgroundColor: ['#28a745', '#ffc107']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        aspectRatio: 2,
-                        plugins: {
-                            legend: { position: 'bottom' },
-                            tooltip: { mode: 'index' }
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    /* =========================
-       6️Search / Filter / Sort
-    ========================= */
-    const searchInput = document.getElementById("taskSearch");
-    const statusFilter = document.getElementById("statusFilter"); // hidden input
-    const sortOrder = document.getElementById("sortOrder");       // hidden input
-
-    function normalize(text) {
-        return text.toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
-    }
-
-    function applyFilters() {
-        const keyword = normalize(searchInput.value);
-        const status = statusFilter.value;
-
-        const rows = Array.from(document.querySelectorAll("table tbody tr"));
-
-        rows.forEach(row => {
-            const titleEl = row.querySelector(".task-title");
-            if(!titleEl) return;
-
-            const title = normalize(titleEl.innerText);
-            const rowStatus = row.dataset.status;
-
-            const matchText = title.includes(keyword);
-            const matchStatus = (status === "all" || status === rowStatus);
-
-            row.style.display = (matchText && matchStatus) ? "" : "none";
-        });
-
-        sortRows();
-    }
-
-    function sortRows() {
-        const tbody = document.querySelector("table tbody");
-        if(!tbody) return;
-
-        const rows = Array.from(tbody.querySelectorAll("tr"))
-            .filter(r => r.style.display !== "none");
-
-        const sorted = rows.sort((a, b) => {
-            const da = Number(a.dataset.created);
-            const db = Number(b.dataset.created);
-            return sortOrder.value === "newest" ? db - da : da - db;
-        });
-
-        sorted.forEach(r => tbody.appendChild(r));
-    }
-
-    /* =========================
-       7️Dropdown kiểu Add Task cho Filter + Sort
-    ========================= */
-
-    // Status Filter Dropdown
-    function setFilterStatus(value, el) {
-        document.getElementById('statusFilter').value = value;
-        document.getElementById('filterStatusDropdown').innerText = el.innerText;
-
-        // Remove selected class từ các item khác
-        document.querySelectorAll('.filter-dropdown .dropdown-item').forEach(i => i.classList.remove('selected'));
-        el.classList.add('selected');
-
-        applyFilters();
-    }
-
-    function setSortOrder(value, el) {
-        document.getElementById('sortOrder').value = value;
-        document.getElementById('sortOrderDropdown').innerText = el.innerText;
-
-        // Remove selected class từ các item khác
-        document.querySelectorAll('.sort-dropdown .dropdown-item').forEach(i => i.classList.remove('selected'));
-        el.classList.add('selected');
-
-        applyFilters();
-    }
-
-    /* =========================
-       8️Event Listeners
-    ========================= */
-    if(searchInput) searchInput.addEventListener("input", applyFilters);
-
-    /* Hidden inputs thay vì select cũ, dropdown đã auto apply */
-    applyFilters();
-
-</script>
-
-
+<script src="{{ url_for('static', filename='js/tasks.js') }}"></script>
 </body>
 </html>
+

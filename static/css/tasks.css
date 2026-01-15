@@ -704,15 +704,6 @@ body {
     text-shadow: none;      /* bỏ chữ nổi */
 }
 
-/* Icon tròn trước trạng thái */
-.filter-dropdown .dropdown-item::before,
-.sort-dropdown .dropdown-item::before {
-    content: '';
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-}
-
 .filter-dropdown .dropdown-item.completed::before,
 .sort-dropdown .dropdown-item.completed::before {
     background-color: #16a34a;
@@ -723,11 +714,72 @@ body {
     background-color: #eab308;
 }
 
-/* Pretty Status (select) hover giống dropdown, chỉ đổi nền và chữ */
-.pretty-status:hover {
-    background-color: #000; /* nền đen */
-    color: #fff;            /* chữ trắng */
+/* Dropdown menu scroll nếu quá dài */
+.status-dropdown .dropdown-menu {
+    max-height: 250px;       /* chiều cao tối đa */
+    overflow-y: auto;        /* scroll dọc nếu quá nhiều item */
+    padding: 6px;
+    border-radius: 14px;
+    position: relative;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+    border: none;
 }
+
+.status-dropdown .dropdown-menu li:first-child {
+    position: sticky;        /* sticky top */
+    top: 0;
+    background-color: #fff;  /* giữ màu nền */
+    z-index: 0;
+    padding-bottom: 0.5rem;
+}
+
+/* Scrollbar nhỏ gọn */
+.status-dropdown .dropdown-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.status-dropdown .dropdown-menu::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 3px;
+}
+
+.status-dropdown .dropdown-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Item user riêng biệt với icon tròn màu xanh */
+.status-dropdown .dropdown-item.user-item::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #0d6efd; /* màu xanh dương */
+    margin-right: 8px;
+}
+
+/* Hover vẫn mượt giống các item trạng thái */
+.status-dropdown .dropdown-item.user-item:hover {
+    background: linear-gradient(135deg, #495057, #343a40);
+    color: #fff !important;
+}
+
+.status-dropdown .dropdown-menu input#userSearchInput {
+    width: 100%;
+    padding: 6px 10px;
+    border-radius: 0.5rem;
+    border: 1px solid #dee2e6;
+    outline: none;
+}
+
+.status-dropdown .dropdown-menu input#userSearchInput:focus {
+    border-color: #4b6cb7;
+    box-shadow: 0 0 6px rgba(75,108,183,0.35);
+}
+
+
+
+
+
 
 
 
