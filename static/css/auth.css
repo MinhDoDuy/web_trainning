@@ -1,86 +1,92 @@
+/* Background đẹp như yêu cầu */
+body {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        /* Background đẹp như yêu cầu */
-        body {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.card {
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 10px 12px 30px rgba(0,0,0,0.25);
-        }
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 10px 12px 30px rgba(0, 0, 0, 0.25);
+}
 
-        /* Nút gradient xịn */
-        .btn-gradient {
-            background: linear-gradient(135deg, #4b6cb7, #182848); /* gradient sắc nét hơn */
-            color: white;
-            border: none;
-            border-radius: 12px; /* bo tròn mềm mại */
-            padding: 10px 20px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.4s ease, transform 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
+/* Nút gradient xịn */
+.btn-gradient {
+    background: linear-gradient(135deg, #4b6cb7, #182848); /* gradient sắc nét hơn */
+    color: white;
+    border: none;
+    border-radius: 12px; /* bo tròn mềm mại */
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.4s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
 
-        .btn-gradient:hover {
-            background: linear-gradient(135deg, #182848, #4b6cb7); /* đảo gradient khi hover */
-            transform: translateY(-3px) scale(1.0); /* nhấc + phồng nhẹ */
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
+.btn-gradient:hover {
+    background: linear-gradient(135deg, #182848, #4b6cb7); /* đảo gradient khi hover */
+    transform: translateY(-3px) scale(1.0); /* nhấc + phồng nhẹ */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
 
-        .btn-gradient:active {
-            transform: translateY(0) scale(0.98); /* cảm giác nhấn */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
+.btn-gradient:active {
+    transform: translateY(0) scale(0.98); /* cảm giác nhấn */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
 
 
-        .form-control {
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        .form-control:focus {
-            border-color: #4b6cb7;
-            box-shadow: 0 0 12px rgba(75,108,183,0.35);
-        }
+.form-control {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
 
-        .input-group { position: relative; }
+.form-control:focus {
+    border-color: #ffc0cb;
+    box-shadow: 0 0 8px rgba(255,192,203,0.45);
+}
 
-        .eye-toggle, .clear-input {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.input-group {
+    position: relative;
+}
 
-        /* Icon show/hide password */
-        .eye-toggle, .clear-input {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            transition: 0.3s ease;
-        }
+.eye-toggle, .clear-input {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        .eye-toggle { right: 11px; }
-        .eye-toggle:hover {
-            transform: translateY(-50%) scale(1.2);
-            color: #4b6cb7;
-        }
+/* Icon show/hide password */
+.eye-toggle, .clear-input {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: 0.3s ease;
+}
 
-        /* X clear input */
-        .input-group {
+.eye-toggle {
+    right: 11px;
+}
+
+.eye-toggle:hover {
+    transform: translateY(-50%) scale(1.2);
+    color: #4b6cb7;
+}
+
+/* X clear input */
+.input-group {
     position: relative;
 }
 
@@ -90,10 +96,10 @@
     top: 50%;
     right: 10px;
     transform: translateY(-50%);
-    font-size: 1.rem;
+    /*font-size: 1.rem;*/
     color: #aaa;
     cursor: pointer;
-    display: block;  /* luôn hiện */
+    display: block; /* luôn hiện */
     transition: all 0.3s ease; /* mượt */
     opacity: 0.8;
 }
@@ -111,31 +117,34 @@
 }
 
 
-        .link-hover {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            transition: all 0.3s ease;
-        }
-        .link-hover:hover {
-            transform: translateY(-2px);
-            color: #182848;
-            text-decoration: none;
-        }
-        .link-hover i {
-            transition: all 0.3s ease;
-        }
-        .link-hover:hover i {
-            transform: rotate(20deg) scale(1.2);
-            color: #4b6cb7;
-        }
+.link-hover {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.3s ease;
+}
 
-        .toast-container {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            z-index: 11;
-        }
+.link-hover:hover {
+    transform: translateY(-2px);
+    color: #182848;
+    text-decoration: none;
+}
+
+.link-hover i {
+    transition: all 0.3s ease;
+}
+
+.link-hover:hover i {
+    transform: rotate(20deg) scale(1.2);
+    color: #4b6cb7;
+}
+
+.toast-container {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 11;
+}
 
 /* =======================
    FORGOT PASSWORD FORM
@@ -145,6 +154,7 @@
     color: #ccc;
     display: none;
 }
+
 .forgot-password-form .position-relative input:focus + .forgot-clear-input,
 .forgot-password-form .position-relative input:not(:placeholder-shown) + .forgot-clear-input {
     display: block;
@@ -158,17 +168,27 @@
     color: #ccc;
     display: none;
 }
+
 .reset-password-form .reset-eye-toggle {
     right: 15px;
     font-size: 1.2rem;
     color: #6c757d;
 }
+
 .reset-password-form .reset-clear-input:hover,
 .reset-password-form .reset-eye-toggle:hover {
     color: #4b6cb7;
     transform: translateY(-50%) scale(1.2);
 }
+
 .reset-password-form .position-relative input:focus + .reset-clear-input,
 .reset-password-form .position-relative input:not(:placeholder-shown) + .reset-clear-input {
     display: block;
 }
+
+/*.auth-form .form-control:focus {*/
+/*    border-color: #ffc0cb;*/
+/*!important;*/
+/*    box-shadow: 0 0 8px rgba(255, 192, 203, 0.45);*/
+/*!important;*/
+/*}*/

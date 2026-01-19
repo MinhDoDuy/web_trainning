@@ -109,3 +109,8 @@ deleteModal.addEventListener('show.bs.modal', function(event) {
     }
 });
 
+// TEST loader khi chạy local
+setTimeout(() => {
+    document.body.classList.add("loaded");
+}, 5000);
+

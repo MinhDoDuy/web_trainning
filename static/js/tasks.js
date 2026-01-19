@@ -42,7 +42,7 @@ function setStatus(inputId, el, isDefault = false) {
 
         switch (el.dataset.value) {
             case 'todo': dot.className = 'status-dot bg-secondary'; break;
-            case 'doing': dot.className = 'status-dot bg-info'; break;
+            case 'doing': dot.className = 'status-dot bg-warning'; break;
             case 'done': dot.className = 'status-dot bg-success'; break;
             default: dot.className = 'status-dot d-none';
         }
@@ -107,7 +107,7 @@ if (chartModal) {
                             Number(document.body.dataset.doing || 0),
                             Number(document.body.dataset.done || 0)
                         ],
-                        backgroundColor: ['#ffc107', '#0d6efd', '#28a745']
+                        backgroundColor: ['#6c757d', '#FFCC00', '#28a745']
                     }]
                 },
                 options: {
@@ -300,9 +300,16 @@ function capitalizeWords(str) {
 }
 
 
-document.querySelectorAll('input[name="title"], input[name="description"], textarea').forEach(el => {
-    el.addEventListener('blur', function() {
-        this.value = capitalizeWords(this.value);
-    });
+addTaskForm.addEventListener('submit', function () {
+    const statusInput = document.getElementById('statusInputAdmin');
+    if (statusInput) {
+        statusInput.value = statusInput.value.toLowerCase();
+    }
 });
+
+
+// TEST loader khi chạy local
+setTimeout(() => {
+    document.body.classList.add("loaded");
+}, 5000);
 
