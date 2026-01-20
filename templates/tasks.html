@@ -155,21 +155,31 @@
                                     <span class="status-dot d-none" id="statusDotAdmin"></span>
                                     <span id="statusTextAdmin" class="flex-grow-1 text-center">Select Status</span>
                                 </button>
+
                                 <ul class="dropdown-menu" aria-labelledby="statusDropdownAdmin">
-                                    <li><a class="dropdown-item todo" href="#"
-                                           onclick="setStatus('statusInputAdmin', this)" data-value="todo"><span
-                                            class="status-dot bg-secondary"></span> To Do</a></li>
-                                    <li><a class="dropdown-item doing" href="#"
-                                           onclick="setStatus('statusInputAdmin', this)" data-value="doing"><span
-                                            class="status-dot bg-warning"></span> Doing</a></li>
-                                    <!--                                    <li><a class="dropdown-item done" href="#"-->
-                                    <!--                                           onclick="setStatus('statusInputAdmin', this)" data-value="done"><span-->
-                                    <!--                                            class="status-dot bg-success"></span> Done</a></li>-->
+                                    <li>
+                                        <a class="dropdown-item todo" href="#"
+                                           onclick="setStatus('statusInputAdmin', this)" data-value="todo">
+                                            <span class="status-dot bg-secondary me-2"></span> To Do
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item doing" href="#"
+                                           onclick="setStatus('statusInputAdmin', this)" data-value="doing">
+                                            <span class="status-dot bg-warning me-2"></span> Doing
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item done" href="#"
+                                           onclick="setStatus('statusInputAdmin', this)" data-value="done">
+                                            <span class="status-dot bg-success me-2"></span> Done
+                                        </a>
+                                    </li>
                                 </ul>
+
                                 <input type="hidden" name="status" id="statusInputAdmin" value="">
                             </div>
                         </div>
-
 
                         <!-- Add Task Button -->
                         <div style="flex: 0 0 130px;">
@@ -213,9 +223,9 @@
                                     <li><a class="dropdown-item doing" href="#"
                                            onclick="setStatus('statusInputUser', this)" data-value="doing">
                                         <span class="status-dot bg-warning"></span> Doing</a></li>
-<!--                                    <li><a class="dropdown-item done" href="#"-->
-<!--                                           onclick="setStatus('statusInputUser', this)" data-value="done">-->
-<!--                                        <span class="status-dot bg-success"></span> Done</a></li>-->
+                                    <li><a class="dropdown-item done" href="#"
+                                           onclick="setStatus('statusInputUser', this)" data-value="done">
+                                        <span class="status-dot bg-success"></span> Done</a></li>
                                 </ul>
                                 <input type="hidden" name="status" id="statusInputUser" value="todo">
                             </div>

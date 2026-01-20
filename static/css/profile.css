@@ -189,38 +189,6 @@ body {
     flex-direction: column;
 }
 
-#avatarUploadBtn {
-    border-radius: 0.5rem;
-    padding: 0.35rem 0.75rem;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-#avatarUploadBtn {
-    background: linear-gradient(135deg, #adb5bd, #6c757d); /* gradient xám */
-    color: white;
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    padding: 0.45rem 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.3rem;
-    transition: all 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-}
-
-#avatarUploadBtn:hover {
-    background: linear-gradient(135deg, #6c757d, #495057); /* gradient tối hơn khi hover */
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
-    color: white !important;
-}
 
 .modal-footer .btn-save-modal,
 .modal-footer .btn-cancel-modal {
@@ -277,4 +245,42 @@ body {
 
     font-size: 0.85rem;   /* giảm chữ */
     padding: 0.25rem 0.5rem;  /* giảm khoảng cách trong button */
+}
+
+/* Avatar chung */
+.profile-avatar {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;            /* tròn */
+    border: 3px solid #000;        /* viền đen */
+    padding: 3px;                  /* khoảng cách viền */
+    object-fit: cover;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+}
+
+/* Nút upload avatar */
+#avatarUploadBtn {
+    background: linear-gradient(135deg, #adb5bd, #6c757d);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.45rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    transition: all 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    margin: 0 auto;                /* căn giữa dưới avatar */
+    margin-top: 10px;
+}
+
+#avatarUploadBtn:hover {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+    color: white !important;
 }

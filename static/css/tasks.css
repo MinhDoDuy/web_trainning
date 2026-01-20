@@ -174,12 +174,12 @@ body {
 
 .btn-logout:hover {
     transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 5px 15px rgba(220,53,69,0.3);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
 }
 
 .btn-logout:active {
     transform: translateY(0) scale(0.98);
-    box-shadow: 0 3px 8px rgba(220,53,69,0.2);
+    box-shadow: 0 3px 8px rgba(220, 53, 69, 0.2);
 }
 
 /* Gradient general */

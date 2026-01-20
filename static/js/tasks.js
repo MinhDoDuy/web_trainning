@@ -41,10 +41,17 @@ function setStatus(inputId, el, isDefault = false) {
         dot.classList.remove('d-none');
 
         switch (el.dataset.value) {
-            case 'todo': dot.className = 'status-dot bg-secondary'; break;
-            case 'doing': dot.className = 'status-dot bg-warning'; break;
-            case 'done': dot.className = 'status-dot bg-success'; break;
-            default: dot.className = 'status-dot d-none';
+            case 'todo':
+                dot.className = 'status-dot bg-secondary';
+                break;
+            case 'doing':
+                dot.className = 'status-dot bg-warning';
+                break;
+            case 'done':
+                dot.className = 'status-dot bg-success';
+                break;
+            default:
+                dot.className = 'status-dot d-none';
         }
     }
 }
@@ -167,12 +174,29 @@ function sortRows() {
         .filter(r => r.style.display !== "none");
 
     const sorted = rows.sort((a, b) => {
-        const da = Number(a.dataset.created);
-        const db = Number(b.dataset.created);
-        return sortOrder.value === "newest" ? db - da : da - db;
+        const da = Number(a.dataset.created) || 0;
+        const db = Number(b.dataset.created) || 0;
+
+        if (sortOrder.value === "newest") {
+            return db - da; // lớn nhất trước → mới nhất
+        } else {
+            return da - db; // nhỏ nhất trước → cũ nhất
+        }
     });
 
-    sorted.forEach(r => tbody.appendChild(r));
+    sorted.forEach((r, index) => {
+        tbody.appendChild(r);
+        const tdIndex = r.querySelector("td:first-child");
+        if (tdIndex) {
+            if (sortOrder.value === "newest") {
+                // newest lên trên → cũ = 1, mới = n
+                tdIndex.textContent = rows.length - index;
+            } else {
+                // oldest lên trên → cũ = 1, mới = n
+                tdIndex.textContent = index + 1;
+            }
+        }
+    });
 }
 
 /* =========================
@@ -305,6 +329,13 @@ addTaskForm.addEventListener('submit', function () {
     if (statusInput) {
         statusInput.value = statusInput.value.toLowerCase();
     }
+
+    // --- Gọi capitalize cho title & description ---
+    const titleInput = addTaskForm.querySelector('input[name="title"]');
+    const descInput = addTaskForm.querySelector('input[name="description"]');
+
+    if (titleInput) titleInput.value = capitalizeWords(titleInput.value);
+    if (descInput) descInput.value = capitalizeWords(descInput.value);
 });
 
 

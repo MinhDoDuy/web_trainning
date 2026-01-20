@@ -201,7 +201,7 @@ def index_route():
 def add_task_route():
     title = request.form.get("title", "").strip()
     description = request.form.get("description", "").strip()
-    status = request.form.get("todo", "doing")
+    status = request.form.get('status')
     role = session.get("role")
     user_id = session.get("user_id")
 
@@ -531,6 +531,7 @@ def profile_route():
         return redirect(url_for('profile_route'))
 
     return render_template('profile.html', user=user, edit_mode=edit_mode)
+
 
 
 
