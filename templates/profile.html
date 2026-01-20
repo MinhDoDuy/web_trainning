@@ -109,6 +109,7 @@
             </div>
             <div class="col-md-7">
                 <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Joined:</strong> {{ user.created_at.strftime('%d %b %Y') }}</p>
                 <p><strong>Role:</strong>
                     {% if user.role.lower() == 'admin' %}
                     <span class="badge bg-danger">{{ user.role }}</span>
