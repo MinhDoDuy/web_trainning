@@ -3,6 +3,13 @@ body {
     background-color: #f8f9fa;
 }
 
+.page-title-sm {
+    font-size: 1.25rem;   /* chỉnh: 1.1rem – 1.3rem tùy mắt */
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+
 /* ================= Inputs & Focus ================= */
 .form-control:focus, .form-select:focus {
     box-shadow: 0 0 6px rgba(255,192,203,0.4);
@@ -28,6 +35,11 @@ body {
     line-height: 22px;
     display: none;
     transition: all 0.2s;
+}
+
+
+.dropdown-menu {
+    overflow: visible;
 }
 
 .position-relative input:focus + .clear-input,
@@ -162,12 +174,12 @@ body {
 
 .btn-logout:hover {
     transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 5px 15px rgba(220,53,69,0.3);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
 }
 
 .btn-logout:active {
     transform: translateY(0) scale(0.98);
-    box-shadow: 0 3px 8px rgba(220,53,69,0.2);
+    box-shadow: 0 3px 8px rgba(220, 53, 69, 0.2);
 }
 
 /* Gradient general */
@@ -221,6 +233,11 @@ body {
 .modal-body .form-control:focus {
     box-shadow: 0 0 6px rgba(255,192,203,0.4);
     border-color: #ffc0cb;
+}
+
+#userSearchInput:focus {
+    box-shadow: 0 0 6px rgba(255,192,203,0.4) !important;
+    border-color: #ffc0cb !important;
 }
 
 /* Modal footer buttons */
@@ -352,7 +369,7 @@ body {
 #filterStatusDot.todo { background-color: #6c757d; }
 
 .dropdown-item.doing .status-dot,
-#filterStatusDot.doing { background-color: #0dcaf0; }
+#filterStatusDot.doing { background-color: #FFCC00; }
 
 .dropdown-item.done .status-dot,
 #filterStatusDot.done { background-color: #198754; }
@@ -427,7 +444,7 @@ body {
 
 /* Status colors */
 .dropdown-item.todo .status-dot { background-color: #6c757d; }
-.dropdown-item.doing .status-dot { background-color: #0dcaf0; }
+.dropdown-item.doing .status-dot { background-color: #FFCC00; }
 .dropdown-item.done .status-dot { background-color: #198754; }
 
 /* Scrollbar gọn */
@@ -440,5 +457,34 @@ body {
 }
 .status-dropdown .dropdown-menu::-webkit-scrollbar-track {
     background: transparent;
+}
+
+.search-clear-btn {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+
+    font-size: 14px;
+    width: 18px;
+    height: 18px;
+    line-height: 16px;
+
+    text-align: center;
+    cursor: pointer;
+    color: #999;
+    border-radius: 50%;
+}
+
+.search-clear-btn:hover {
+    color: #dc3545;
+}
+
+.header-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #000;
+    background-color: #fff;
 }
 

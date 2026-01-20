@@ -1,7 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+import os
+import time
 from functools import wraps
-from werkzeug.security import generate_password_hash, check_password_hash
+from typing import Any, Callable
+
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from psycopg2 import IntegrityError
+from werkzeug import Response
+from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+
 from database import (
     get_user_by_username, create_user, get_user_by_id,
     get_all_users, update_user, delete_user,
@@ -10,19 +17,22 @@ from database import (
 )
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"
+app.secret_key = os.getenv("SECRET_KEY", "dev-key")
+
 
 # -----------------------------
 # Decorators
 # -----------------------------
-def login_required(f):
+def login_required(f: object) -> Callable[..., Response | Any]:
     @wraps(f)
     def wrapper(*args, **kwargs):
         if "user_id" not in session:
-            flash("You need to log in!", "warning")
+            flash("You need to log in first!", "warning")
             return redirect(url_for("login_route"))
         return f(*args, **kwargs)
+
     return wrapper
+
 
 def role_required(role):
     def decorator(f):
@@ -32,8 +42,11 @@ def role_required(role):
                 flash("You do not have access!", "danger")
                 return redirect(url_for("index_route"))
             return f(*args, **kwargs)
+
         return wrapper
+
     return decorator
+
 
 # -----------------------------
 # Routes: Auth
@@ -66,6 +79,7 @@ def register_route():
 
     return render_template("register.html", username_value=username_value, role_value=role_value)
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login_route():
     username_value = ""
@@ -91,11 +105,13 @@ def login_route():
 
     return render_template("login.html", username_value=username_value)
 
+
 @app.route("/logout")
 def logout():
     session.clear()
     flash("You have logged out!", "success")
     return redirect(url_for("login_route"))
+
 
 # -----------------------------
 # Routes: Forgot/Reset Password
@@ -113,6 +129,7 @@ def forgot_password_route():
             else:
                 return redirect(url_for("reset_password_route", username=username))
     return render_template("forgot_password.html")
+
 
 @app.route("/reset-password/<username>", methods=["GET", "POST"])
 def reset_password_route(username):
@@ -139,6 +156,7 @@ def reset_password_route(username):
 
     return render_template("reset_password.html", username=username)
 
+
 # -----------------------------
 # Routes: Dashboard
 # -----------------------------
@@ -160,6 +178,8 @@ def index_route():
     doing_count = sum(1 for t in tasks if t["status"] == "doing")
     done_count = sum(1 for t in tasks if t["status"] == "done")
 
+    user_obj = get_user_by_id(user_id)
+
     return render_template(
         "tasks.html",
         tasks=tasks,
@@ -168,7 +188,8 @@ def index_route():
         users=users,
         todo_count=todo_count,
         doing_count=doing_count,
-        done_count=done_count
+        done_count=done_count,
+        user = user_obj
     )
 
 
@@ -180,7 +201,7 @@ def index_route():
 def add_task_route():
     title = request.form.get("title", "").strip()
     description = request.form.get("description", "").strip()
-    status = request.form.get("status", "pending")
+    status = request.form.get('status')
     role = session.get("role")
     user_id = session.get("user_id")
 
@@ -196,6 +217,7 @@ def add_task_route():
 
     flash("Task added successfully!", "success")
     return redirect(url_for("index_route"))
+
 
 @app.route("/edit_task/<int:task_id>", methods=["GET", "POST"])
 @login_required
@@ -222,6 +244,7 @@ def edit_task_route(task_id):
 
     return render_template("edit_task.html", task=task)
 
+
 @app.route("/delete_task/<int:task_id>")
 @login_required
 def delete_task_route(task_id):
@@ -239,6 +262,7 @@ def delete_task_route(task_id):
     delete_task(task_id)
     flash("Task deleted!", "success")
     return redirect(url_for("index_route"))
+
 
 # -----------------------------
 # Routes: Admin User Management
@@ -291,12 +315,24 @@ def admin_manager_route():
             flash("User not found!", "danger")
             return redirect(url_for("admin_manager_route"))
 
-        if user_db["role"] == "admin":
-            flash("You cannot edit Admin!", "warning")
+        # if user_db["role"] == "admin":
+        #     flash("Admin accounts cannot be modified!", "warning")
+        #     return redirect(url_for("admin_manager_route"))
+
+        # CHECK TRÙNG USERNAME
+        existing_user = get_user_by_username(username)
+        if existing_user and existing_user["id"] != int(user_id):
+            flash(f"Username '{username}' already exists!", "warning")
             return redirect(url_for("admin_manager_route"))
 
         hashed_password = generate_password_hash(password) if password else None
-        update_user(user_id, username=username, password=hashed_password, role=role)
+        update_user(
+            user_id,
+            username=username,
+            password=hashed_password,
+            role=role
+        )
+
         flash("User updated successfully!", "success")
         return redirect(url_for("admin_manager_route"))
 
@@ -351,6 +387,7 @@ def page_not_found(e):
         error_message="The requested URL was not found on the server."
     ), 404
 
+
 @app.errorhandler(403)
 def forbidden(e):
     return render_template(
@@ -360,6 +397,7 @@ def forbidden(e):
         error_message="You do not have permission to access this page."
     ), 403
 
+
 @app.errorhandler(500)
 def internal_error(e):
     return render_template(
@@ -368,6 +406,133 @@ def internal_error(e):
         error_title="Internal Server Error",
         error_message="Something went wrong on the server."
     ), 500
+
+
+UPLOAD_FOLDER = 'static/avatar'
+app.secret_key = "your_secret_key"
+app.config['UPLOAD_FOLDER'] = 'static/avatar'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+MAX_AVATAR_SIZE = 4 * 1024 * 1024  # 4MB
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def save_avatar(user_id, file):
+    """
+    Lưu avatar mới, xóa avatar cũ (trừ default.jpg)
+    Trả về filename hoặc None
+    """
+    if not file or file.filename == '':
+        return None
+
+    if not allowed_file(file.filename):
+        return None
+
+    if not file.mimetype.startswith('image/'):
+        return None
+
+    # Check size (Flask không auto có content_length)
+    file.stream.seek(0, os.SEEK_END)
+    size = file.stream.tell()
+    file.stream.seek(0)
+
+    if size > MAX_AVATAR_SIZE:
+        return None
+
+    user = get_user_by_id(user_id)
+    if not user:
+        return None
+
+    filename = f"user_{user_id}_{int(time.time())}_{secure_filename(file.filename)}"
+    path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(path)
+
+    # Xóa avatar cũ
+    old_avatar = user.get('avatar')
+    if old_avatar and old_avatar != 'default.jpg':
+        old_path = os.path.join(app.config['UPLOAD_FOLDER'], old_avatar)
+        if os.path.exists(old_path):
+            os.remove(old_path)
+
+    return filename
+
+
+# Xem profile
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile_route():
+    user_id = session.get('user_id')
+    user = get_user_by_id(user_id)
+
+    if not user:
+        flash("User not found!", "danger")
+        return redirect(url_for("index_route"))
+
+    edit_mode = request.args.get("edit", "0") == "1"
+
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        confirm_password = request.form.get('confirm_password', '').strip()
+        avatar_file = request.files.get('avatar')
+
+        update_data = {}
+
+        # =========================
+        # Username validation
+        # =========================
+        if not username:
+            flash("Username cannot be empty!", "warning")
+            return redirect(url_for('profile_route', edit=1))
+
+        if username != user['username']:
+            existing_user = get_user_by_username(username)
+            if existing_user and existing_user['id'] != user_id:
+                flash("Username already taken!", "danger")
+                return redirect(url_for('profile_route', edit=1))
+            update_data['username'] = username
+
+        # =========================
+        # Password + Confirm check
+        # =========================
+        if password:
+            if not confirm_password:
+                flash("Please confirm your password!", "warning")
+                return redirect(url_for('profile_route', edit=1))
+
+            if password != confirm_password:
+                flash("Password confirmation does not match!", "danger")
+                return redirect(url_for('profile_route', edit=1))
+
+            if check_password_hash(user['password'], password):
+                flash("New password cannot be the same as the old password!", "warning")
+                return redirect(url_for('profile_route', edit=1))
+
+            update_data['password'] = generate_password_hash(password)
+
+        # =========================
+        # Avatar
+        # =========================
+        if avatar_file:
+            new_avatar = save_avatar(user_id, avatar_file)
+            if not new_avatar:
+                flash("Avatar không hợp lệ hoặc vượt quá 4MB!", "danger")
+                return redirect(url_for('profile_route', edit=1))
+            update_data['avatar'] = new_avatar
+
+        # =========================
+        # Update DB
+        # =========================
+        if update_data:
+            update_user(user_id, **update_data)
+            flash("Profile updated successfully!", "success")
+
+        return redirect(url_for('profile_route'))
+
+    return render_template('profile.html', user=user, edit_mode=edit_mode)
+
+
 
 
 # -----------------------------

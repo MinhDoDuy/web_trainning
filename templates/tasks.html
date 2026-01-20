@@ -11,6 +11,7 @@
       data-todo="{{ todo_count }}"
       data-doing="{{ doing_count }}"
       data-done="{{ done_count }}">
+
 <div class="container py-5">
 
     <!-- Header -->
@@ -24,14 +25,21 @@
             <div style="width: 120px;"></div>
             {% endif %}
 
-            <h1 class="m-0 fw-bold position-absolute start-50 translate-middle-x" style="font-size: 3rem;">
+            <h1 class="bi bi-house-door m-0 fw-bold position-absolute start-50 translate-middle-x"
+                style="font-size: 3rem;">
                 Tasks Dashboard
             </h1>
 
             <div class="d-flex align-items-center">
-                <span class="me-4" style="font-size: 1.1rem;">
-                    Welcome: {{ username }} {% if role %}({{ role }}){% endif %}
-                </span>
+                <a href="{{ url_for('profile_route') }}" class="d-flex align-items-center me-4"
+                   style="font-size: 1.1rem; text-decoration: none; color: inherit;">
+                    <img src="{% if user.avatar %}{{ url_for('static', filename='avatar/' + user.avatar) }}{% else %}/static/avatar/default.jpg{% endif %}"
+                         class="header-avatar me-2"
+                         width="32"
+                         height="32"
+                         style="object-fit: cover;">
+                    <span>Welcome: {{ username }} ({{ role }})</span>
+                </a>
                 <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm btn-logout">
                     <i class="bi bi-box-arrow-right me-1"></i> Log Out
                 </a>
@@ -61,7 +69,13 @@
         </div>
 
         <div class="card mb-5 shadow-sm" style="margin-top: -20px;">
-            <div class="card-header">Add New Task</div>
+            <div class="card-header bg-transparent border-0 pb-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="page-title page-title-sm m-0">
+                        <i class="bi bi-plus-circle me-2"></i> Add New Task
+                    </h2>
+                </div>
+            </div>
             <div class="card-body">
                 <form id="addTaskForm" action="{{ url_for('add_task_route') }}" method="post" class="row g-3">
 
@@ -94,6 +108,19 @@
                                     <span id="userText" class="flex-grow-1 text-center">Select User</span>
                                 </button>
                                 <ul class="dropdown-menu p-2" aria-labelledby="assignedUserDropdown">
+                                    <!-- Input search -->
+                                    <li>
+                                        <div class="position-relative user-search-wrapper">
+                                            <input type="text"
+                                                   id="userSearchInput"
+                                                   class="form-control mb-2 user-search-input"
+                                                   placeholder="Type to search..."
+                                                   onkeyup="filterUsers()">
+
+                                            <span class="clear-input clear-user-search"
+                                                  onclick="clearInput('userSearchInput')">&times;</span>
+                                        </div>
+                                    </li>
                                     <!-- Default / reset -->
                                     <li>
                                         <a class="dropdown-item" href="#"
@@ -101,11 +128,7 @@
                                             -- Default --
                                         </a>
                                     </li>
-                                    <!-- Input search -->
-                                    <li>
-                                        <input type="text" id="userSearchInput" class="form-control mb-2"
-                                               placeholder="Type to search..." onkeyup="filterUsers()">
-                                    </li>
+
                                     <!-- User items -->
                                     {% for u in users %}
                                     {% if u.role != 'admin' %}
@@ -132,28 +155,31 @@
                                     <span class="status-dot d-none" id="statusDotAdmin"></span>
                                     <span id="statusTextAdmin" class="flex-grow-1 text-center">Select Status</span>
                                 </button>
+
                                 <ul class="dropdown-menu" aria-labelledby="statusDropdownAdmin">
-                                    <!-- Default / reset -->
-<!--                                    <li>-->
-<!--                                        <a class="dropdown-item" href="#"-->
-<!--                                           onclick="setStatus('statusInputAdmin', null, true)">-->
-<!--                                            &#45;&#45; Default &#45;&#45;-->
-<!--                                        </a>-->
-<!--                                    </li>-->
-                                    <li><a class="dropdown-item todo" href="#"
-                                           onclick="setStatus('statusInputAdmin', this)" data-value="todo"><span
-                                            class="status-dot bg-secondary"></span> To Do</a></li>
-                                    <li><a class="dropdown-item doing" href="#"
-                                           onclick="setStatus('statusInputAdmin', this)" data-value="doing"><span
-                                            class="status-dot bg-info"></span> Doing</a></li>
-                                    <li><a class="dropdown-item done" href="#"
-                                           onclick="setStatus('statusInputAdmin', this)" data-value="done"><span
-                                            class="status-dot bg-success"></span> Done</a></li>
+                                    <li>
+                                        <a class="dropdown-item todo" href="#"
+                                           onclick="setStatus('statusInputAdmin', this)" data-value="todo">
+                                            <span class="status-dot bg-secondary me-2"></span> To Do
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item doing" href="#"
+                                           onclick="setStatus('statusInputAdmin', this)" data-value="doing">
+                                            <span class="status-dot bg-warning me-2"></span> Doing
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item done" href="#"
+                                           onclick="setStatus('statusInputAdmin', this)" data-value="done">
+                                            <span class="status-dot bg-success me-2"></span> Done
+                                        </a>
+                                    </li>
                                 </ul>
+
                                 <input type="hidden" name="status" id="statusInputAdmin" value="">
                             </div>
                         </div>
-
 
                         <!-- Add Task Button -->
                         <div style="flex: 0 0 130px;">
@@ -196,7 +222,7 @@
                                         <span class="status-dot bg-secondary"></span> To Do</a></li>
                                     <li><a class="dropdown-item doing" href="#"
                                            onclick="setStatus('statusInputUser', this)" data-value="doing">
-                                        <span class="status-dot bg-info"></span> Doing</a></li>
+                                        <span class="status-dot bg-warning"></span> Doing</a></li>
                                     <li><a class="dropdown-item done" href="#"
                                            onclick="setStatus('statusInputUser', this)" data-value="done">
                                         <span class="status-dot bg-success"></span> Done</a></li>
@@ -251,7 +277,7 @@
                         To Do
                     </a></li>
                     <li><a class="dropdown-item doing" href="#" onclick="setFilterStatus('doing', this)">
-                        <span class="status-dot"></span>
+                        <span class="status-dot bg-warning"></span>
                         Doing
                     </a></li>
                     <li><a class="dropdown-item done" href="#" onclick="setFilterStatus('done', this)">
@@ -324,7 +350,7 @@
                         {% if task.status == 'todo' %}
                         <span class="badge bg-secondary">To Do</span>
                         {% elif task.status == 'doing' %}
-                        <span class="badge bg-info text-dark">Doing</span>
+                        <span class="badge bg-warning text-dark">Doing</span>
                         {% elif task.status == 'done' %}
                         <span class="badge bg-success">Done</span>
                         {% endif %}
@@ -474,7 +500,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content rounded-4 shadow-lg border-0">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tasks Overview</h5>
+                    <h5 class="bi bi-pie-chart-fill modal-title"> Tasks Overview</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -493,6 +519,7 @@
 <!--<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="{{ url_for('static', filename='js/tasks.js') }}"></script>
+
 </body>
 </html>
 
