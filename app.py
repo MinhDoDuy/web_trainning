@@ -412,10 +412,50 @@ UPLOAD_FOLDER = 'static/avatar'
 app.secret_key = "your_secret_key"
 app.config['UPLOAD_FOLDER'] = 'static/avatar'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+MAX_AVATAR_SIZE = 4 * 1024 * 1024  # 4MB
 
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def save_avatar(user_id, file):
+    """
+    Lưu avatar mới, xóa avatar cũ (trừ default.jpg)
+    Trả về filename hoặc None
+    """
+    if not file or file.filename == '':
+        return None
+
+    if not allowed_file(file.filename):
+        return None
+
+    if not file.mimetype.startswith('image/'):
+        return None
+
+    # Check size (Flask không auto có content_length)
+    file.stream.seek(0, os.SEEK_END)
+    size = file.stream.tell()
+    file.stream.seek(0)
+
+    if size > MAX_AVATAR_SIZE:
+        return None
+
+    user = get_user_by_id(user_id)
+    if not user:
+        return None
+
+    filename = f"user_{user_id}_{int(time.time())}_{secure_filename(file.filename)}"
+    path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(path)
+
+    # Xóa avatar cũ
+    old_avatar = user.get('avatar')
+    if old_avatar and old_avatar != 'default.jpg':
+        old_path = os.path.join(app.config['UPLOAD_FOLDER'], old_avatar)
+        if os.path.exists(old_path):
+            os.remove(old_path)
+
+    return filename
 
 
 # Xem profile
@@ -424,6 +464,7 @@ def allowed_file(filename):
 def profile_route():
     user_id = session.get('user_id')
     user = get_user_by_id(user_id)
+
     if not user:
         flash("User not found!", "danger")
         return redirect(url_for("index_route"))
@@ -433,35 +474,65 @@ def profile_route():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
+        confirm_password = request.form.get('confirm_password', '').strip()
         avatar_file = request.files.get('avatar')
 
         update_data = {}
 
-        # Kiểm tra username trùng
-        if username and username != user['username']:
+        # =========================
+        # Username validation
+        # =========================
+        if not username:
+            flash("Username cannot be empty!", "warning")
+            return redirect(url_for('profile_route', edit=1))
+
+        if username != user['username']:
             existing_user = get_user_by_username(username)
             if existing_user and existing_user['id'] != user_id:
-                flash("Username already taken!", "warning")
-            else:
-                update_data['username'] = username
+                flash("Username already taken!", "danger")
+                return redirect(url_for('profile_route', edit=1))
+            update_data['username'] = username
 
-        # Password
+        # =========================
+        # Password + Confirm check
+        # =========================
         if password:
+            if not confirm_password:
+                flash("Please confirm your password!", "warning")
+                return redirect(url_for('profile_route', edit=1))
+
+            if password != confirm_password:
+                flash("Password confirmation does not match!", "danger")
+                return redirect(url_for('profile_route', edit=1))
+
+            if check_password_hash(user['password'], password):
+                flash("New password cannot be the same as the old password!", "warning")
+                return redirect(url_for('profile_route', edit=1))
+
             update_data['password'] = generate_password_hash(password)
 
+        # =========================
         # Avatar
-        if avatar_file and allowed_file(avatar_file.filename):
-            filename = f"{int(time.time())}_{secure_filename(avatar_file.filename)}"
-            avatar_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            avatar_file.save(avatar_path)
-            update_data['avatar'] = filename  # chỉ lưu tên file vào DB
+        # =========================
+        if avatar_file:
+            new_avatar = save_avatar(user_id, avatar_file)
+            if not new_avatar:
+                flash("Avatar không hợp lệ hoặc vượt quá 4MB!", "danger")
+                return redirect(url_for('profile_route', edit=1))
+            update_data['avatar'] = new_avatar
 
+        # =========================
+        # Update DB
+        # =========================
         if update_data:
             update_user(user_id, **update_data)
             flash("Profile updated successfully!", "success")
-            return redirect(url_for('profile_route'))
+
+        return redirect(url_for('profile_route'))
 
     return render_template('profile.html', user=user, edit_mode=edit_mode)
+
+
 
 # -----------------------------
 # Run

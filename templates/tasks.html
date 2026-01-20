@@ -34,7 +34,7 @@
                 <a href="{{ url_for('profile_route') }}" class="d-flex align-items-center me-4"
                    style="font-size: 1.1rem; text-decoration: none; color: inherit;">
                     <img src="{% if user.avatar %}{{ url_for('static', filename='avatar/' + user.avatar) }}{% else %}/static/avatar/default.jpg{% endif %}"
-                         class="rounded-circle me-2"
+                         class="header-avatar me-2"
                          width="32"
                          height="32"
                          style="object-fit: cover;">

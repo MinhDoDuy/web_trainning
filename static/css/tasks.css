@@ -479,3 +479,12 @@ body {
     color: #dc3545;
 }
 
+.header-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #000;
+    background-color: #fff;
+}
+
