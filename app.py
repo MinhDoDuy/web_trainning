@@ -103,7 +103,7 @@ def login_route():
                 flash("Login successful!", "success")
                 return redirect(url_for("index_route"))
 
-    return render_template("login.html", username_value=username_value)
+    return render_template("index.html", username_value=username_value)
 
 
 @app.route("/logout")

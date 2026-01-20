@@ -234,8 +234,6 @@ def update_task(task_id, title=None, description=None, status=None):
         conn.close()
 
 
-
-
 def delete_task(task_id):
     conn = get_db_connection()
     cur = conn.cursor()
