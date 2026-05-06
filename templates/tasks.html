@@ -266,12 +266,15 @@
                         id="filterStatusDropdown"
                         data-bs-toggle="dropdown"
                         aria-expanded="false">
-                    <span class="status-dot d-none" id="filterStatusDot"></span>
+                    <span class="status-dot all" id="filterStatusDot"></span>
                     <span id="filterStatusText">All Status</span>
                 </button>
 
                 <ul class="dropdown-menu w-100" aria-labelledby="filterStatusDropdown">
-                    <li><a class="dropdown-item all" href="#" onclick="setFilterStatus('all', this)">All Status</a></li>
+                    <li><a class="dropdown-item all" href="#" onclick="setFilterStatus('all', this)">
+                        <span class="status-dot all"></span>
+                        All Status
+                    </a></li>
                     <li><a class="dropdown-item todo" href="#" onclick="setFilterStatus('todo', this)">
                         <span class="status-dot"></span>
                         To Do

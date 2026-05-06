@@ -3,7 +3,7 @@ import time
 from functools import wraps
 from typing import Any, Callable
 
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, abort
 from psycopg2 import IntegrityError
 from werkzeug import Response
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -39,8 +39,8 @@ def role_required(role):
         @wraps(f)
         def wrapper(*args, **kwargs):
             if session.get("role") != role:
-                flash("You do not have access!", "danger")
-                return redirect(url_for("index_route"))
+                # flash("You do not have access!", "danger")
+                abort(403)
             return f(*args, **kwargs)
 
         return wrapper

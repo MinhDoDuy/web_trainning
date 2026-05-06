@@ -365,6 +365,9 @@ body {
     margin-right: 6px;
 }
 
+.dropdown-item.all .status-dot,
+#filterStatusDot.all { background-color: #b11226; }
+
 .dropdown-item.todo .status-dot,
 #filterStatusDot.todo { background-color: #6c757d; }
 
